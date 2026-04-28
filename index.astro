@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+// Fetch all blog posts
+const posts = await getCollection('blog');
+// Sort by newest first
+posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title="Sam Borni | Home">
+  <Nav />
+
+  <!-- Hero Section -->
+  <!-- Note: Ensure IMG_4651_2.jpg is in public/assets/img/ -->
+  <header class="relative h-[500px] flex items-center justify-center text-center overflow-hidden">
+    <!-- Background Image with Overlay -->
+    <div class="absolute inset-0 bg-[url('/assets/img/IMG_4651_2.jpg')] bg-cover bg-center"></div>
+    <div class="absolute inset-0 bg-slate-900/60"></div> <!-- Dark overlay for readability -->
+    
+    <div class="relative z-10 px-4 max-w-4xl mx-auto">
+      <h1 class="text-5xl md:text-7xl font-bold text-white mb-4 font-serif tracking-tight">
+        Sam Borni
+      </h1>
+      <p class="text-xl md:text-2xl text-slate-200 font-light">
+        Senior Solutions Consultant & Writer
+      </p>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container mx-auto px-4 py-16 max-w-4xl">
+    <div class="flex justify-between items-end mb-12 border-b border-slate-200 pb-4">
+      <h2 class="text-3xl font-bold text-slate-900 font-serif">Latest Writing</h2>
+      <span class="text-sm text-slate-500 italic">Thoughts on politics, tech, and life</span>
+    </div>
+    
+    <div class="space-y-16">
+      {posts.map((post) => (
+        <article class="group flex flex-col md:flex-row gap-8 items-start">
+          <div class="flex-1">
+            <a href={`/blog/${post.slug}`} class="block mb-2">
+              <h3 class="text-3xl font-bold text-slate-900 group-hover:text-brand transition-colors duration-300 font-serif">
+                {post.data.title}
+              </h3>
+            </a>
+            <p class="text-lg text-slate-600 mb-4 leading-relaxed">
+              {post.data.description}
+            </p>
+            <div class="flex items-center text-sm text-slate-500">
+              <span class="font-semibold text-brand">Sam Borni</span>
+              <span class="mx-2">•</span>
+              <time>{post.data.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</time>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+
+  <Footer />
+</BaseLayout>
