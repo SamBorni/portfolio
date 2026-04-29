@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CV — Sam Borni</title>
+  <meta name="description" content="Curriculum Vitae — Sam Borni, senior solutions consultant and writer." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .cv-header { margin-bottom: var(--gap); }
+
+    .cv-header h1 {
+      font-family: var(--serif);
+      font-size: clamp(36px, 5vw, 52px);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin: 0.75rem 0 1.25rem;
+    }
+
+    .cv-summary {
+      font-size: 15px;
+      color: var(--ink-mid);
+      line-height: 1.75;
+      max-width: 600px;
+      border-left: 2px solid var(--rule);
+      padding-left: 1.25rem;
+    }
+
+    /* Two-column CV body */
+    .cv-body {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 0 3rem;
+    }
+
+    .cv-section-label {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      padding-top: 1.6rem;
+      position: sticky;
+      top: 1rem;
+      align-self: start;
+    }
+
+    .cv-entries {
+      border-top: 0.5px solid var(--rule);
+      margin-bottom: var(--gap);
+    }
+
+    .cv-entry {
+      padding: 1.25rem 0;
+      border-bottom: 0.5px solid var(--rule);
+    }
+
+    .cv-entry-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .cv-entry-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .cv-entry-date {
+      font-size: 12px;
+      color: var(--ink-faint);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .cv-entry-org {
+      font-size: 13px;
+      color: var(--ink-mid);
+      margin-bottom: 0.65rem;
+    }
+
+    .cv-entry-body {
+      font-size: 13px;
+      color: var(--ink-mid);
+      line-height: 1.65;
+    }
+
+    /* Languages */
+    .lang-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem 1.5rem;
+      border-top: 0.5px solid var(--rule);
+      padding: 1.25rem 0;
+      margin-bottom: var(--gap);
+    }
+
+    .lang-item-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .lang-item-level {
+      font-size: 12px;
+      color: var(--ink-faint);
+    }
+
+    /* Spacer row to align grid labels */
+    .cv-spacer { margin-bottom: var(--gap); }
+
+    @media (max-width: 620px) {
+      .cv-body { grid-template-columns: 1fr; }
+      .cv-section-label { position: static; padding-top: 0; margin-bottom: 0.5rem; }
+      .cv-entries { margin-bottom: 2rem; }
+      .cv-entry-head { flex-direction: column; gap: 0.1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-wrap">
+
+    <nav class="site-nav">
+      <span class="nav-logo">S · A · B</span>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="cv.html" class="active">CV</a></li>
+      </ul>
+    </nav>
+
+    <header class="cv-header">
+      <span class="eyebrow">Curriculum Vitae</span>
+      <h1>Sam Borni</h1>
+      <p class="cv-summary">Senior consultant with a decade of experience managing strategic engagements across public and private sectors. Combining a background in computer science with dual master's degrees in international relations, I specialise in translating complex concepts into actionable strategies — with a global perspective shaped by work across Asia Pacific, Europe, and North America.</p>
+    </header>
+
+    <div class="cv-body">
+
+      <!-- Experience -->
+      <div class="cv-section-label">Experience</div>
+      <div class="cv-entries">
+
+        <div class="cv-entry">
+          <div class="cv-entry-head">
+            <span class="cv-entry-title">Senior Solutions Consultant</span>
+            <span class="cv-entry-date">Apr 2025 – Present</span>
+          </div>
+          <p class="cv-entry-org">Smarsh</p>
+          <p class="cv-entry-body">Leading technical strategy for enterprise sales opportunities across Smarsh's communications capture, archiving, and surveillance solutions. Trusted advisor to financial services clients on regulatory compliance and integration.</p>
+        </div>
+
+        <div class="cv-entry">
+          <div class="cv-entry-head">
+            <span class="cv-entry-title">Senior Solutions Consultant</span>
+            <span class="cv-entry-date">May 2023 – Apr 2025</span>
+          </div>
+          <p class="cv-entry-org">Semarchy · Greater London</p>
+          <p class="cv-entry-body">Delivered PoC implementations and pilot projects across data management and governance for clients in energy, government, banking, and financial services. Managed RFX processes and stakeholder engagement from business users to C-suite.</p>
+        </div>
+
+        <div class="cv-entry">
+          <div class="cv-entry-head">
+            <span class="cv-entry-title">Senior Solutions Consultant</span>
+            <span class="cv-entry-date">Oct 2018 – Mar 2023</span>
+          </div>
+          <p class="cv-entry-org">TIBCO Software · London</p>
+          <p class="cv-entry-body">Requirements gathering and solution design with customers across EMEA and APAC on Master Data Management, Data Governance, and integration. Led global partner enablement sessions across Europe and APAC.</p>
+        </div>
+
+        <div class="cv-entry">
+          <div class="cv-entry-head">
+            <span class="cv-entry-title">Consultant / Senior Consultant</span>
+            <span class="cv-entry-date">May 2015 – Oct 2018</span>
+          </div>
+          <p class="cv-entry-org">Anglepoint · London</p>
+          <p class="cv-entry-body">Delivered software asset management engagements for enterprise clients, covering licence compliance, data analytics, and contract analysis. Managed junior team members and led client-facing workstreams.</p>
+        </div>
+
+      </div>
+
+      <!-- Education -->
+      <div class="cv-section-label">Education</div>
+      <div class="cv-entries">
+
+        <div class="cv-entry">
+          <div class="cv-entry-head">
+            <span class="cv-entry-title">MA, Asian and International Affairs</span>
+            <span class="cv-entry-date">Sep 2022 – Sep 2023</span>
+          </div>
+          <p class="cv-entry-org">King's College London · Grade: 3.75/4.0</p>
+          <p class="cv-entry-body">Second year of a Double Masters. Focus on Chinese maritime policy, European foreign policy, and East Asian political economy.</p>
+        </div>
+
+        <div class="cv-entry">
+          <div class="cv-entry-head">
+            <span class="cv-entry-title">MA, International Relations</span>
+            <span class="cv-entry-date">Sep 2021 – Sep 2022</span>
+          </div>
+          <p class="cv-entry-org">Renmin University of China · Grade: 3.9/4.0</p>
+          <p class="cv-entry-body">First year of a Double Masters focused on Indo-Pacific affairs, Anglo-Japanese relations, and strategic risk in Southeast Asia.</p>
+        </div>
+
+        <div class="cv-entry">
+          <div class="cv-entry-head">
+            <span class="cv-entry-title">BSc (Hons), Computer Science</span>
+            <span class="cv-entry-date">Sep 2011 – May 2015</span>
+          </div>
+          <p class="cv-entry-org">University of Portsmouth</p>
+          <p class="cv-entry-body">Included a year abroad at Uppsala University. Team leader, National Cyber Security Challenge; award-winning writer for The Galleon student newspaper.</p>
+        </div>
+
+      </div>
+
+      <!-- Languages -->
+      <div class="cv-section-label">Languages</div>
+      <div class="lang-grid">
+        <div>
+          <p class="lang-item-name">English</p>
+          <p class="lang-item-level">Native</p>
+        </div>
+        <div>
+          <p class="lang-item-name">Japanese</p>
+          <p class="lang-item-level">Limited working proficiency</p>
+        </div>
+        <div>
+          <p class="lang-item-name">Chinese</p>
+          <p class="lang-item-level">Elementary proficiency</p>
+        </div>
+        <div>
+          <p class="lang-item-name">Swedish</p>
+          <p class="lang-item-level">Elementary proficiency</p>
+        </div>
+      </div>
+
+    </div><!-- /.cv-body -->
+
+    <footer class="site-footer">
+      <span class="footer-copy">© Sam Borni 2025</span>
+      <ul class="footer-links">
+        <li><a href="https://www.linkedin.com/in/samborni/" target="_blank" rel="noopener">LinkedIn</a></li>
+      </ul>
+    </footer>
+
+  </div>
+</body>
+</html>

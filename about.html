@@ -1,164 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>S.A.B - About</title>
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-        <!-- Font Awesome icons (free version)-->
-        <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
-        <!-- Google fonts-->
-        <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="css/styles.css" rel="stylesheet" />
-    </head>
-    <body>
-        <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
-            <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="index.html">S.A.B</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                    Menu
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav ms-auto py-4 py-lg-0">
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="about.html">About</a></li>
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="The_Issue_With_Labour_Cost_Of_Living_Plan.html">Latest Post</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <!-- Page Header-->
-        <header class="masthead" style="background-image: url('assets/img/IMG_4651_2.jpg')">
-            <div class="container position-relative px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-md-10 col-lg-8 col-xl-7">
-                        <div class="page-heading">
-                            <h1>About</h1>
-                            <span class="subheading">Sam Borni</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
-        <!-- Main Content-->
-        <main class="mb-4">
-            <div class="container px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-md-10 col-lg-8 col-xl-7">
-                        <p>Sam Borni is a freelance writer, a Double Masters student at King's College London and Renmin University of China, and a Senior Solutions Consultant at TIBCO Software. He is an expert at mastering data to enable businesses in optimising their strategic and real-time decision-making processes. Adept working within a number of life-cycle models, and well-versed in a number of programming languages including Python, SQL, and Java, Sam has seven years of experience leading enablement sessions to equip customers with the necessary skillsets to establish robust master data management initiatives, data governance frameworks and software asset management practices. </p>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Sam Borni</title>
+  <meta name="description" content="About Sam Borni — senior solutions consultant and writer based in London." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .about-hero { margin-bottom: var(--gap); }
 
-                        <p>Sam also has extensive experience working across Europe and Asia, and is passionate about international politics and diplomacy. A strong proponent of international organisations and a staunch advocate for multilateralism, he is currently researching the possibility of a renewed Anglo-Japanese alliance in the aftermath of Brexit. Sam graduated with honours from the University of Portsmouth in 2015 with a bachelor’s degree in Computer Science, and has a fundamental understanding of Japanese language. </p>
+    .about-hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(36px, 5vw, 52px);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+      margin: 0.75rem 0 1.75rem;
+    }
 
-                        <p>An avid athlete, Sam has won awards playing both rugby and American football, and regularly competes in weightlifting competitions. He is also a former award-winning writer for The Galleon newspaper, and you’ll find him online @samborni on social media, or in-person at London coffee shops that make a good flat white. </p>
+    .about-body {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 3rem 4rem;
+      align-items: start;
+    }
 
-                        <!-- Divider-->
-                        <hr class="my-4" />
-                        <h2 class="section-heading">Curriculum Vitae</h2>
-                        <br>
-                        <h4>Experience</h4>
-                        <br>
-                        <h5>TIBCO Software - Senior Solutions Consultant
-                        <br><i>October 2018 - Present</i></h5>
-                        <ul>
-                            <li>Detailed project conception and requirements gathering with customers across EMEA and APAC surrounding their shared data assets, business processes and data governance needs.</li>
+    .about-prose p {
+      font-size: 15px;
+      color: var(--ink-mid);
+      line-height: 1.8;
+      margin-bottom: 1.25rem;
+    }
 
-                            <li>Responsible for the completion of RFI/RFPs, responding in detail on the matter of solution capability pertaining to matters of Master Data Management, Reference Data Management, Metadata Management and Data Governance.</li>
+    .about-prose p:last-child { margin-bottom: 0; }
 
-                            <li>Leading enablement sessions globally with teams of partners and consultants across Europe and APAC to assist them in becoming familiar with the EBX solution. </li>
+    /* Sidebar */
+    .about-sidebar { display: flex; flex-direction: column; gap: 2rem; }
 
-                            <li>Discussions and implementations of POCs with customers.</li>
-                        </ul>
-                        <br>
-                        <h5>Anglepoint - Consultant / Senior Consultant
-                        <br><i>May 2015 - October 2018</i></h5>
-                        <ul>
-                            <li>Working closely with clients on a daily basis in the delivery and presentation of projects, discussing and analysing potential business opportunities, and handling budget and cost considerations across a number of concurrent work-streams.</li>
+    .sidebar-block {}
 
-                            <li>Perform Quality Assurance on deliverables to ensure a high standard prior to their presentation to clients and their customers, through analysis of contracts, sales orders and software license agreements.</li>
+    .sidebar-block h3 {
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 0.5px solid var(--rule);
+    }
 
-                            <li>Participate in onsite meetings for data gathering and validation purposes, and handling communication with customers both on behalf of clients, or as an intermediary between the client and their customer. </li>
+    .sidebar-block ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
 
-                            <li>Assist in the development of members within the team, providing both training and guidance where required, as well as managing resources across the team to ensure deadlines are met.</li>
+    .sidebar-block ul li {
+      font-size: 13px;
+      color: var(--ink-mid);
+      padding-left: 0.75rem;
+      position: relative;
+    }
 
-                            <li>Carry out data analytics on hardware and software assets in order to identify software usage for technical, budgetary, inventory and compliance purposes.</li>
-                        </ul>
-                        <br>
-                        <h4>Education</h4>
-                        <br>
-                        <h5>University of Portsmouth
-                        <br> Bachelor of Science (Hons), Computer Science
-                        <br><i>September 2011 - May 2015</i></h5>
-                        <ul>
-                            <li>Chose this course since it balances practical and theoretical approaches to computing at a major university with a dedicated mobile application development lab and is consistently awarded ‘excellent’ in student guidance and support. </li>
-                            <li>Creator of Spotter, a mobile gym assistant targeting weightlifters and bodybuilders developed for iOS as part of my final year project and dissertation. </li>
-                            <li>Team leader for the National Cyber Security Challenge, designing a selection of cryptography-related challenges, as well as Erasmus Ambassador for the university, promoting the exchange program through written case studies of my own experiences, giving presentations to groups of first year students to inform them of the benefits of studying abroad.</li>
-                            <li>First team defensive tackle for the University of Portsmouth Destroyers, the university's American Football team. Award-winning writer for The Galleon student newspaper, covering television and film. </li>
-                        </ul>
-                        <br>
-                        <h5>Uppsala University
-                        <br>Bachelor of Science (Hons), Computer Science
-                        <br><i>September 2012 - August 2013</i></h5>
-                        <ul>
-                            <li> Study abroad year as an undergraduate as part of my degree at the University of Portsmouth. </li>
-                        </ul>
+    .sidebar-block ul li::before {
+      content: "–";
+      position: absolute;
+      left: 0;
+      color: var(--ink-faint);
+    }
 
-                    </div>
-                </div>
-            </div>
-        </main>
-        <!-- Footer-->
-        <footer class="border-top">
-            <div class="container px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-md-10 col-lg-8 col-xl-7">
-                        <ul class="list-inline text-center">
-                            <li class="list-inline-item">
-                                <a href="https://twitter.com/samborni">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fas fa-circle fa-stack-2x"></i>
-                                        <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a href="https://www.instagram.com/samborni">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fas fa-circle fa-stack-2x"></i>
-                                        <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a href="https://www.linkedin.com/in/samborni/">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fas fa-circle fa-stack-2x"></i>
-                                        <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a href="mailto:sam@borni.co.uk">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fas fa-circle fa-stack-2x"></i>
-                                        <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                            </li>
-                        </ul>
-                        <div class="small text-center text-muted fst-italic">Copyright &copy; Borni 2022</div>
-                    </div>
-                </div>
-            </div>
-        </footer>
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
-    </body>
+    .sidebar-link {
+      display: inline-block;
+      margin-top: 0.25rem;
+      font-size: 13px;
+      color: var(--ink-mid);
+      border-bottom: 0.5px solid var(--rule);
+      padding-bottom: 1px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .sidebar-link:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    @media (max-width: 640px) {
+      .about-body { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-wrap">
+
+    <nav class="site-nav">
+      <span class="nav-logo">S · A · B</span>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html" class="active">About</a></li>
+        <li><a href="cv.html">CV</a></li>
+      </ul>
+    </nav>
+
+    <header class="about-hero">
+      <span class="eyebrow">About</span>
+      <h1>Sam Borni</h1>
+    </header>
+
+    <div class="about-body">
+      <div class="about-prose">
+        <p>Senior consultant with a decade of experience managing strategic engagements across public and private sectors. Combining a background in computer science with dual master's degrees in international relations, I specialise in translating complex concepts into actionable strategies — with a global perspective shaped by work across Asia Pacific, Europe, and North America.</p>
+        <p>I currently work as a Senior Solutions Consultant at Smarsh, where I lead technical strategy for enterprise sales opportunities in financial services. Previously, I held senior roles at Semarchy and TIBCO Software, focused on master data management, data governance, and enterprise integration.</p>
+        <p>Alongside my consulting career, I write on international politics and diplomacy — with a particular focus on Southeast Asia, the Indo-Pacific, and Anglo-Japanese relations. I hold a Master of Arts in Asian and International Affairs from King's College London and a Master of Arts in International Relations from Renmin University of China (3.9/4.0), where I specialised in inter-regional dynamics and strategic risk.</p>
+        <p>Outside of work I compete in weightlifting, and you'll find me in London coffee shops hunting for a good flat white. You can find me online at <a href="https://www.linkedin.com/in/samborni/" target="_blank" rel="noopener" style="color: var(--ink); border-bottom: 0.5px solid var(--rule);">LinkedIn</a>.</p>
+      </div>
+
+      <aside class="about-sidebar">
+        <div class="sidebar-block">
+          <h3>Interests</h3>
+          <ul>
+            <li>International politics &amp; diplomacy</li>
+            <li>Indo-Pacific affairs</li>
+            <li>Anglo-Japanese relations</li>
+            <li>Master Data Management</li>
+            <li>Data governance</li>
+          </ul>
+        </div>
+
+        <div class="sidebar-block">
+          <h3>Languages</h3>
+          <ul>
+            <li>English — native</li>
+            <li>Japanese — working</li>
+            <li>Chinese — elementary</li>
+            <li>Swedish — elementary</li>
+          </ul>
+        </div>
+
+        <div class="sidebar-block">
+          <h3>Links</h3>
+          <a class="sidebar-link" href="cv.html">View CV →</a><br>
+          <a class="sidebar-link" href="https://www.linkedin.com/in/samborni/" target="_blank" rel="noopener">LinkedIn →</a>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="site-footer">
+      <span class="footer-copy">© Sam Borni 2025</span>
+      <ul class="footer-links">
+        <li><a href="https://www.linkedin.com/in/samborni/" target="_blank" rel="noopener">LinkedIn</a></li>
+      </ul>
+    </footer>
+
+  </div>
+</body>
 </html>
