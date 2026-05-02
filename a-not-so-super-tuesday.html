@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A not-so-super Tuesday — Sam Borni</title>
+  <meta name="description" content="Super Tuesday dissected — why the most hyped day in the U.S. primary calendar is, this year, a rather anticlimactic affair." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .back-link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 12px; color: var(--ink-mid);
+      border-bottom: 0.5px solid var(--rule); padding-bottom: 1px;
+      margin-bottom: 2.5rem; transition: color 0.15s, border-color 0.15s;
+    }
+    .back-link:hover { color: var(--ink); border-color: var(--ink); }
+    .article-header { margin-bottom: var(--gap); max-width: 680px; }
+    .article-series {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ink-faint); margin-bottom: 1rem;
+    }
+    .article-series-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--rule); display: inline-block; }
+    .article-header h1 {
+      font-family: var(--serif); font-size: clamp(28px, 4.5vw, 44px);
+      font-weight: 400; line-height: 1.12; letter-spacing: -0.01em;
+      color: var(--ink); margin-bottom: 1.25rem;
+    }
+    .article-byline { font-size: 12px; color: var(--ink-faint); letter-spacing: 0.04em; }
+    .article-standfirst {
+      font-size: 15px; color: var(--ink-mid); line-height: 1.7;
+      border-left: 2px solid var(--rule); padding-left: 1.25rem;
+      margin-bottom: 2.5rem; max-width: 620px;
+    }
+    .article-body { max-width: 660px; }
+    .author-note {
+      font-size: 14px; font-style: italic; color: var(--ink-mid);
+      line-height: 1.7; border-left: 2px solid var(--rule);
+      padding-left: 1.25rem; margin-bottom: 2rem;
+    }
+    .article-body h3 {
+      font-family: var(--serif); font-size: 20px; font-weight: 400;
+      color: var(--ink); margin: 2.5rem 0 0.9rem;
+    }
+    .article-body p { font-size: 15px; color: var(--ink-mid); line-height: 1.85; margin-bottom: 1.2rem; }
+    .article-body a { color: var(--ink); border-bottom: 0.5px solid var(--rule); transition: border-color 0.15s; }
+    .article-body a:hover { border-color: var(--ink); }
+    .article-body ol { margin: 0 0 1.5rem 0; padding: 0; list-style: none; counter-reset: fd-counter; }
+    .article-body ol > li {
+      counter-increment: fd-counter; font-size: 15px; color: var(--ink-mid);
+      line-height: 1.75; padding-left: 2rem; position: relative; margin-bottom: 1.5rem;
+    }
+    .article-body ol > li::before {
+      content: counter(fd-counter) "."; position: absolute; left: 0;
+      color: var(--ink-faint); font-size: 13px; top: 0.15rem;
+    }
+    .article-body ul { margin: 0 0 1.2rem 0; padding: 0; list-style: none; }
+    .article-body ul li {
+      font-size: 15px; color: var(--ink-mid); line-height: 1.75;
+      padding-left: 1.25rem; position: relative; margin-bottom: 0.5rem;
+    }
+    .article-body ul li::before { content: "–"; position: absolute; left: 0; color: var(--ink-faint); }
+    .section-rule { border: none; border-top: 0.5px solid var(--rule); margin: 2rem 0; }
+    .section-label-inline {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--ink-faint); margin-bottom: 1rem; display: block;
+    }
+    .election-cal { margin: 1.5rem 0; }
+    .election-cal ul { list-style: none; padding: 0; margin: 0; }
+    .election-cal ul li {
+      font-size: 13px; color: var(--ink-mid); padding: 0.5rem 0;
+      border-bottom: 0.5px solid var(--rule); padding-left: 0; margin: 0;
+    }
+    .election-cal ul li::before { content: none; }
+    .final-thoughts { font-style: italic; }
+</style>
+</head>
+<body>
+  <div class="site-wrap">
+    <nav class="site-nav">
+      <span class="nav-logo">S · A · B</span>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="cv.html">CV</a></li>
+      </ul>
+    </nav>
+    <a class="back-link" href="writing.html">← All writing</a>
+    <header class="article-header">
+      <div class="article-series">
+        <span>Follow Democracy</span>
+        <span class="article-series-dot"></span>
+        <span>United States</span>
+      </div>
+      <h1>A not-so-super Tuesday</h1>
+      <p class="article-byline">Sam Borni &nbsp;·&nbsp; March 5, 2024</p>
+    </header>
+    <div class="article-body">
+      <p class="author-note">Ah, Super Tuesday. It plasters the banners of news organisations every four years as a day of 'great importance', only to be forgotten about by Wednesday morning. Is it really that crucial, or just another day in the political circus tent? Enjoy this bonus midweek newsletter which dissects today's melodrama.</p>
+      <p class="article-standfirst">Super Tuesday dissected — why the most hyped day in the U.S. primary calendar is, this year, a rather anticlimactic affair.</p>
+      
+<p>Today sees Americans wake up to the most pivotal date in the campaign calendars of presidential hopefuls — Super Tuesday. Rather than states holding individual primaries, today sees 15 races for the Republican nomination and 16 races for the Democrat nomination take place simultaneously.</p>
+<p>Super Tuesday is a tradition stretching back to the days of Jimmy Carter and Ronald Reagan when states began stacking primaries in early March to solidify frontrunners as soon as possible. What began with seven states holding primaries and caucuses on a single day in 1980 grew to more than twenty by 1988. Every four years, Super Tuesday would often see a leader emerge from the pack.</p>
+<p>In contrast, this year's Super Tuesday feels like an anticlimactic affair. An incumbent President Biden is running for re-election, leaving any hopeful challengers waiting four more years for a turn. As for the Republican Party, Donald Trump has dominated the GOP zeitgeist for close to a decade, showing no signs of stepping aside. The candidates for November's presidential election are all but set in stone already.</p>
+<h3>Trumpeting Trump</h3>
+<p>With the exception of Sunday's loss to Nikki Haley in Washington DC, Donald Trump has won every primary so far by double-digit margins. Despite a commanding lead in allocated delegates, Trump did not take his lone defeat well, ranting about how 'Birdbrain' is a low-performance, disloyal loser who shouldn't even be in the race. Super Tuesday has become less of an opportunity for Haley to find her footing and more of a do-or-die moment — she is forecast to lose every primary by huge margins, including those taking place today.</p>
+<p>She has vowed to stay in the race for "as long as we're competitive," with a 'seven-figure' advertising promotion extending beyond Super Tuesday. However, many believe her continuing presence is at best a contingency, should one of Trump's numerous court cases go against him. One such case — that which sought to bar Trump from the ballot in Colorado citing the 14th amendment — was struck down unanimously by the Supreme Court the previous day. It's a huge victory for Trump, likely to bolster an already strong performance expected in today's polls.</p>
+<h3>Dean's distant dream</h3>
+<p>With respect to Dean Phillips and his ongoing attempts to swoop in and claim the Democrat nomination, there is nothing to suggest the nominee will be anyone other than Joe Biden. Biden won 95% of the vote in South Carolina, 90% in Nevada, and 80% in Michigan — his closest challenger in the latter was a box on the ballot labelled 'uncommitted', a protest vote organised by Palestinian supporters in opposition to the president's stance on Israel's war against Gaza.</p>
+<h3>The morning after</h3>
+<p>Despite the looming certainty of a Biden-Trump rematch, the campaign trail continues after Super Tuesday. Mathematically, neither candidate can secure victory until later in the month. Estimates suggest Trump is likely to clinch enough delegates by either March 12th or March 19th. Official confirmation is likely to come for Biden at the same time, with large delegate counts from Georgia, Washington, Illinois, and Ohio pushing him past the 50% threshold.</p>
+<p>Primary season technically continues until the final votes take place on June 8th, followed by national conventions at which delegates officially select their party's nominee. Republicans will convene in Wisconsin in July; Democrats in late August in Chicago. That is when the likely rematch will officially commence — though let's be frank, it's a contest that has been ongoing for some time now anyway.</p>
+
+    </div>
+    <footer class="site-footer">
+      <span class="footer-copy">© Sam Borni 2025</span>
+      <ul class="footer-links">
+        <li><a href="https://www.linkedin.com/in/samborni/" target="_blank" rel="noopener">LinkedIn</a></li>
+      </ul>
+    </footer>
+  </div>
+</body>
+</html>

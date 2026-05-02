@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Writing — Sam Borni</title>
+  <meta name="description" content="Essays and analysis on international politics, diplomacy, and global elections — by Sam Borni." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .writing-hero { margin-bottom: var(--gap); }
+    .writing-hero h1 { font-family: var(--serif); font-size: clamp(36px, 5vw, 52px); font-weight: 400; letter-spacing: -0.01em; line-height: 1.1; margin: 0.75rem 0 1rem; }
+    .writing-hero p { font-size: 15px; color: var(--ink-mid); max-width: 520px; line-height: 1.7; }
+    .writing-section { margin-bottom: 3rem; }
+    .writing-section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .writing-section-title { font-size: 11px; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint); white-space: nowrap; }
+    .writing-section-rule { flex: 1; height: 0.5px; background: var(--rule); }
+    .article-list { display: flex; flex-direction: column; }
+    .article-row { display: grid; grid-template-columns: 80px 1fr auto; align-items: baseline; gap: 1.5rem; padding: 1.1rem 0; border-bottom: 0.5px solid var(--rule); text-decoration: none; }
+    .article-row:first-child { border-top: 0.5px solid var(--rule); }
+    .article-row:hover .article-row-title { color: var(--ink); border-bottom-color: var(--ink); }
+    .article-row-date { font-size: 12px; color: var(--ink-faint); white-space: nowrap; }
+    .article-row-title { font-size: 15px; color: var(--ink-mid); border-bottom: 0.5px solid transparent; padding-bottom: 1px; transition: color 0.12s, border-color 0.12s; line-height: 1.4; }
+    .article-row-tag { font-size: 11px; color: var(--ink-faint); letter-spacing: 0.06em; white-space: nowrap; }
+    @media (max-width: 580px) { .article-row { grid-template-columns: 1fr; gap: 0.25rem; } .article-row-tag { display: none; } }
+  </style>
+</head>
+<body>
+  <div class="site-wrap">
+    <nav class="site-nav">
+      <span class="nav-logo">S · A · B</span>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="cv.html">CV</a></li>
+      </ul>
+    </nav>
+    <header class="writing-hero">
+      <span class="eyebrow">Writing</span>
+      <h1>Essays &amp; Analysis</h1>
+      <p>International politics, diplomacy, and global elections — with a particular focus on Asia, democracy, and the forces reshaping the world order.</p>
+    </header>
+    <section class="writing-section">
+      <div class="writing-section-header">
+        <span class="writing-section-title">Follow Democracy</span>
+        <div class="writing-section-rule"></div>
+      </div>
+      <div class="article-list">
+        <a class="article-row" href="will-slovakia-follow-viktor-orban.html"><span class="article-row-date">Mar 2024</span><span class="article-row-title">Will Slovakia follow Viktor Orbán east?</span><span class="article-row-tag">Europe</span></a>
+        <a class="article-row" href="the-importance-of-quotation-marks.html"><span class="article-row-date">Mar 2024</span><span class="article-row-title">The importance of quotation marks in Russian 'democracy'</span><span class="article-row-tag">Russia</span></a>
+        <a class="article-row" href="macho-no-more.html"><span class="article-row-date">Mar 2024</span><span class="article-row-title">Macho no more</span><span class="article-row-tag">Americas</span></a>
+        <a class="article-row" href="a-not-so-super-tuesday.html"><span class="article-row-date">Mar 2024</span><span class="article-row-title">A not-so-super Tuesday</span><span class="article-row-tag">United States</span></a>
+        <a class="article-row" href="rising-populism-in-the-rainbow-nation.html"><span class="article-row-date">Mar 2024</span><span class="article-row-title">Rising populism in the Rainbow Nation</span><span class="article-row-tag">Africa</span></a>
+        <a class="article-row" href="nikki-haley-needs-a-miracle.html"><span class="article-row-date">Feb 2024</span><span class="article-row-title">Nikki Haley needs a miracle in South Carolina</span><span class="article-row-tag">United States</span></a>
+        <a class="article-row" href="has-senegals-democratic-beacon-run-out.html"><span class="article-row-date">Feb 2024</span><span class="article-row-title">Has Senegal's democratic beacon run out of batteries?</span><span class="article-row-tag">Africa</span></a>
+        <a class="article-row" href="indonesias-valentines-vote.html"><span class="article-row-date">Feb 2024</span><span class="article-row-title">Is Indonesia's Valentine's vote the start of a political dynasty?</span><span class="article-row-tag">Asia</span></a>
+        <a class="article-row" href="pakistan-2024-kingmakers-in-khaki.html"><span class="article-row-date">Feb 2024</span><span class="article-row-title">Pakistan 2024 — Kingmakers in Khaki</span><span class="article-row-tag">Asia</span></a>
+        <a class="article-row" href="re-electing-the-worlds-coolest-dictator.html"><span class="article-row-date">Feb 2024</span><span class="article-row-title">Re-electing the 'world's coolest dictator'</span><span class="article-row-tag">Americas</span></a>
+        <a class="article-row" href="the-late-surge-of-finlands-populist-right.html"><span class="article-row-date">Jan 2024</span><span class="article-row-title">The late surge of Finland's populist right</span><span class="article-row-tag">Europe</span></a>
+        <a class="article-row" href="the-race-for-second-place.html"><span class="article-row-date">Jan 2024</span><span class="article-row-title">The race for second place</span><span class="article-row-tag">United States</span></a>
+      </div>
+    </section>
+    <section class="writing-section">
+      <div class="writing-section-header">
+        <span class="writing-section-title">Essays</span>
+        <div class="writing-section-rule"></div>
+      </div>
+      <div class="article-list">
+        <a class="article-row" href="the_issue_with_labour_cost_of_living_plan.html"><span class="article-row-date">Jul 2022</span><span class="article-row-title">The U.K. Cost-of-living Crisis — How Labour's messaging misses the mark</span><span class="article-row-tag">Politics</span></a>
+        <a class="article-row" href="singapore_patient_yet_present.html"><span class="article-row-date">May 2022</span><span class="article-row-title">Singapore: Patient, yet Present — Why Lawrence Wong must strike the right balance</span><span class="article-row-tag">Diplomacy</span></a>
+      </div>
+    </section>
+    <footer class="site-footer">
+      <span class="footer-copy">© Sam Borni 2025</span>
+      <ul class="footer-links">
+        <li><a href="https://www.linkedin.com/in/samborni/" target="_blank" rel="noopener">LinkedIn</a></li>
+      </ul>
+    </footer>
+  </div>
+</body>
+</html>
