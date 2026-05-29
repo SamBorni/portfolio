@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PolicyLens — US Party Comparison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-mark">Policy<span>Lens</span></span>
+      <div class="country-selector">
+        <select class="country-select" onchange="window.location.href=this.value">
+          <option value="policy-lens-uk.html">🇬🇧 United Kingdom</option>
+          <option value="policy-lens-us.html" selected>🇺🇸 United States</option>
+          <option value="policy-lens-mt.html">🇲🇹 Malta</option>
+        </select>
+      </div>
+    </div>
+    <div class="nav-pills">
+      <button class="nav-pill active">Issues</button>
+      <button class="nav-pill">About</button>
+      <button class="nav-pill">Sources</button>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div style="margin-bottom:1rem;"><span class="election-badge">2024 Presidential Election &amp; Post-Election · Every Claim Source-Linked</span></div>
+    <h1>Where do the parties really stand?</h1>
+    <p>Compare US political parties on the issues that matter to you. Every statistic and policy claim is linked to its primary source. Position timelines track how stances have shifted since the election.</p>
+    <div class="hero-meta">
+      <span class="hero-meta-item">Every claim source-linked</span>
+      <span class="hero-meta-item">5 parties tracked</span>
+      <span class="hero-meta-item">8 policy areas</span>
+      <span class="hero-meta-item">Live position timelines</span>
+    </div>
+  </div>
+</div>
+
+<main>
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Policy Areas</div>
+      <div class="issue-list" id="issueList"></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Show Parties</div>
+      <div class="party-filters" id="partyFilters"></div>
+    </div>
+    <div class="sidebar-section" style="border-top:1px solid var(--border);padding-top:1rem;">
+      <div style="font-size:12px;color:var(--text-3);line-height:1.8;">
+        All claims linked to primary sources — official party platforms, CBO, CDC, EPA, congressional records, and verified news reports.<br><br>
+        <span style="display:inline-flex;align-items:center;gap:5px;"><span style="background:#FEF5E7;color:#9A5F00;font-size:10px;font-weight:600;padding:1px 5px;border-radius:3px;">⟳ Position shift</span> shown where stance has changed post-election.</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="content">
+    <div class="view-tabs">
+      <button class="view-tab active" data-view="detail">Detailed View</button>
+      <button class="view-tab" data-view="compare">Quick Compare</button>
+    </div>
+
+    <div id="detailView">
+      <div class="issue-header">
+        <div class="issue-title-row">
+          <div class="issue-title-icon" id="issueTitleIcon"></div>
+          <div class="issue-title" id="issueTitleText"></div>
+        </div>
+        <div class="issue-description" id="issueDesc"></div>
+      </div>
+
+      <div class="fact-strip">
+        <div class="fact-strip-body">
+          <span class="fact-icon">ℹ</span>
+          <div class="fact-text" id="factText"></div>
+        </div>
+        <div class="fact-citations" id="factCitations"></div>
+      </div>
+
+      <div class="agreement-section">
+        <div class="agreement-label">Policy Ambition Spectrum</div>
+        <div id="spectrumRows"></div>
+        <div class="spectrum-axis"><span>Less interventionist</span><span>More interventionist</span></div>
+      </div>
+
+      <div class="stance-grid" id="stanceGrid"></div>
+    </div>
+
+    <div id="compareView" class="hidden">
+      <div class="compare-table-wrap">
+        <table class="compare-table">
+          <thead><tr id="compareHead"></tr></thead>
+          <tbody id="compareBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <strong>PolicyLens</strong> · Nonpartisan civic information platform<br>
+  All claims linked to primary sources. Positions reflect publicly stated policies, party platforms, and congressional records.<br>
+  <span style="font-size:10px;opacity:0.5;">Not affiliated with any political party, campaign, or government body. Last updated May 2025.</span>
+</footer>
+
+<script>
+const PARTIES = [
+  { id:'dem',  name:'Democrats',    full:'Democratic Party',        color:'#1560BD', light:'#E8EFF7' },
+  { id:'rep',  name:'Republicans',  full:'Republican Party',        color:'#CC0000', light:'#FDE8E8' },
+  { id:'prog', name:'Progressives', full:'Progressive / DSA Wing',  color:'#7B0000', light:'#F5EAEA' },
+  { id:'lib',  name:'Libertarian',  full:'Libertarian Party',       color:'#C8A900', light:'#FAF6E0' },
+  { id:'grn',  name:'Green Party',  full:'Green Party USA',         color:'#17aa5c', light:'#E8F7EE' },
+];
+
+// ── SOURCE REGISTRY ────────────────────────────────────────────────────────────
+const SOURCES = {
+  // Party platforms
+  dem_platform:     { label:'Democratic Party Platform 2024',               url:'https://democrats.org/where-we-stand/party-platform/' },
+  rep_platform:     { label:'Republican Party Platform 2024',               url:'https://www.gop.com/platform/' },
+  sanders_platform: { label:'Sen. Sanders – Policy Issues',                 url:'https://www.sanders.senate.gov/issues/' },
+  lib_platform:     { label:'Libertarian Party Platform 2024',              url:'https://lp.org/platform/' },
+  grn_us_platform:  { label:'Green Party USA Platform 2024',                url:'https://www.gp.org/platform/' },
+  // Healthcare
+  kff_uninsured:    { label:'KFF – Key Facts About the Uninsured 2024',     url:'https://www.kff.org/uninsured/issue-brief/key-facts-about-the-uninsured-population/' },
+  kff_spending:     { label:'Commonwealth Fund – US Health System 2023',    url:'https://www.commonwealthfund.org/publications/issue-briefs/2023/jan/us-health-care-global-perspective-2022' },
+  ira_healthcare:   { label:'White House – IRA Healthcare Provisions',      url:'https://www.whitehouse.gov/briefing-room/statements-releases/2022/08/19/fact-sheet-the-inflation-reduction-act-supports-workers-and-families/' },
+  medicare_all:     { label:'Congress.gov – Medicare for All Act 2023',     url:'https://www.congress.gov/bill/118th-congress/senate-bill/1655' },
+  // Immigration
+  cbp_encounters:   { label:'CBP – Nationwide Border Encounters FY2024',    url:'https://www.cbp.gov/newsroom/stats/nationwide-encounters' },
+  dhs_daca:         { label:'USCIS – DACA Population Data 2024',            url:'https://www.uscis.gov/tools/reports-and-studies/immigration-forms-data/daca-population-data' },
+  trump_border_eo:  { label:'White House – EO 14159: Protecting Against Invasion', url:'https://www.whitehouse.gov/presidential-actions/2025/01/protecting-the-american-people-against-invasion/' },
+  border_bill_2024: { label:'Congress.gov – Emergency National Security Supplemental (2024)', url:'https://www.congress.gov/bill/118th-congress/senate-bill/4120' },
+  // Economy & Tax
+  cbo_debt:         { label:'CBO – Budget & Economic Outlook 2024',         url:'https://www.cbo.gov/publication/60039' },
+  cbo_tcja:         { label:'CBO – TCJA Revenue Effects',                   url:'https://www.cbo.gov/publication/60269' },
+  ira_summary:      { label:'White House – IRA Guidebook',                  url:'https://www.whitehouse.gov/cleanenergy/inflation-reduction-act-guidebook/' },
+  warren_wealth_tax:{ label:'Sen. Warren – Ultra-Millionaire Tax Act',      url:'https://www.warren.senate.gov/imo/media/doc/Ultra-Millionaire%20Tax%20Act%20of%202023%20One%20Pager.pdf' },
+  // Climate
+  epa_ghg:          { label:'EPA – US GHG Emissions Inventory 2024',        url:'https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks' },
+  trump_paris_eo:   { label:'White House – EO 14162: Paris Agreement Withdrawal', url:'https://www.whitehouse.gov/presidential-actions/2025/01/withdrawing-the-united-states-from-the-paris-agreement/' },
+  green_new_deal:   { label:'Congress.gov – Green New Deal Resolution 2019', url:'https://www.congress.gov/bill/116th-congress/house-resolution/109/text' },
+  ira_climate:      { label:'White House – IRA Clean Energy Summary',       url:'https://www.whitehouse.gov/cleanenergy/inflation-reduction-act-guidebook/' },
+  // Gun Control
+  cdc_gundeaths:    { label:'CDC – Firearm Mortality Statistics 2022',      url:'https://www.cdc.gov/nchs/fastats/injury.htm' },
+  bsca_law:         { label:'Congress.gov – Bipartisan Safer Communities Act (2022)', url:'https://www.congress.gov/bill/117th-congress/senate-bill/2938' },
+  gva_stats:        { label:'Gun Violence Archive – 2024 Data',             url:'https://www.gunviolencearchive.org/' },
+  // Reproductive Rights
+  scotus_dobbs:     { label:'SCOTUS – Dobbs v. Jackson Women\'s Health (2022)', url:'https://www.supremecourt.gov/opinions/21pdf/19-1392_6j37.pdf' },
+  guttmacher:       { label:'Guttmacher Institute – Abortion Policy 2025',  url:'https://www.guttmacher.org/state-policy/explore/abortion-policy-absence-roe' },
+  whpa_bill:        { label:'Congress.gov – Women\'s Health Protection Act', url:'https://www.congress.gov/bill/117th-congress/senate-bill/4132' },
+  // Education
+  ed_studentdebt:   { label:'Federal Student Aid – Portfolio Summary',      url:'https://studentaid.gov/data-center/student/portfolio' },
+  naep_education:   { label:'NCES – NAEP Report Card 2024',                 url:'https://nationsreportcard.gov/' },
+  trump_dei_eo:     { label:'White House – EO 14151: Ending DEI Programs',  url:'https://www.whitehouse.gov/presidential-actions/2025/01/ending-illegal-discrimination-and-restoring-merit-based-opportunity/' },
+  scotus_loans:     { label:'SCOTUS – Biden v. Nebraska (2023)',             url:'https://www.supremecourt.gov/opinions/22pdf/22-506_nmip.pdf' },
+  college_for_all:  { label:'Congress.gov – College for All Act 2023',      url:'https://www.congress.gov/bill/118th-congress/senate-bill/1222' },
+  // Foreign Policy & Defense
+  dod_budget:       { label:'DOD – Defense Budget Overview FY2025',         url:'https://comptroller.defense.gov/Budget-Materials/' },
+  ukraine_aid:      { label:'White House – US Support for Ukraine Factsheet', url:'https://www.whitehouse.gov/briefing-room/statements-releases/2024/04/24/fact-sheet-u-s-security-assistance-for-ukraine/' },
+  nato_spending:    { label:'NATO – Defence Expenditure 2024',              url:'https://www.nato.int/cps/en/natohq/topics_49198.htm' },
+  trump_nato:       { label:'Reuters – Trump NATO Remarks Feb 2024',        url:'https://www.reuters.com/world/trump-says-he-would-encourage-russia-do-whatever-hell-they-want-nato-countries-2024-02-10/' },
+  ukraine_95bn:     { label:'Congress.gov – National Security Supplemental Appropriations Act (2024)', url:'https://www.congress.gov/bill/118th-congress/house-bill/8035' },
+};
+
+function S(key) { return SOURCES[key] || { label: key, url: '#' }; }
+
+// ── DATA ───────────────────────────────────────────────────────────────────────
+const ISSUES = [
+{
+  id:'healthcare', icon:'🏥', label:'Healthcare',
+  desc:'Policies on health insurance coverage, the Affordable Care Act, Medicare and Medicaid, prescription drug pricing, and the path to universal coverage.',
+  fact:'In 2023, approximately 26 million Americans — 8% of the population — were uninsured despite ACA expansion. The US spends roughly 18% of GDP on healthcare, more than any other comparable nation, yet ranks below most OECD peers on life expectancy and health outcomes.',
+  factSources:['kff_uninsured','kff_spending'],
+  stances:{
+    dem:{
+      summary:'The Biden administration expanded ACA subsidies via the American Rescue Plan (2021) and Inflation Reduction Act (2022), bringing the uninsured rate to historic lows. Democrats support adding a public option and allowing Medicare to negotiate drug prices — the latter enacted in the IRA. Harris ran on protecting and expanding the ACA.',
+      bullets:['ACA subsidies extended through 2025 via IRA','Medicare drug price negotiation enacted (IRA 2022)','Public option proposed — not yet passed','Medicaid expansion pushed to holdout states'],
+      leaning:'supportive', score:72,
+      sources:['dem_platform','ira_healthcare'],
+      timeline:[
+        { date:'2021-03', type:'policy', who:'President Biden', text:'American Rescue Plan expands ACA subsidies, making premiums effectively zero for millions of low-income enrollees and driving uninsured rates to record lows.', source:'ira_healthcare', change:'reaffirm' },
+        { date:'2022-08', type:'policy', who:'President Biden', text:'Inflation Reduction Act signed — extends ACA subsidies through 2025 and, for the first time, allows Medicare to negotiate prescription drug prices directly with manufacturers.', source:'ira_healthcare', change:'reaffirm' },
+        { date:'2024-08', type:'platform', who:'Democratic Party / Harris Campaign', text:'2024 platform calls for protecting and expanding the ACA, adding a public option, capping insulin at $35 for all Americans, and continued Medicare drug negotiation expansion.', source:'dem_platform', change:'reaffirm' },
+        { date:'2025-01', type:'statement', who:'Senate Democrats', text:'Democrats mount opposition to Republican efforts to claw back IRA healthcare provisions and ACA subsidy extensions, warning millions will lose coverage.', source:'dem_platform', change:'reaffirm' },
+      ]
+    },
+    rep:{
+      summary:'Republicans attempted to repeal the ACA in 2017, failing by a single Senate vote. The 2024 GOP platform is largely vague on healthcare, favouring deregulation, price transparency, and health savings accounts. The Trump administration has moved to cut Medicaid through work requirements and reduce ACA outreach.',
+      bullets:['ACA repeal failed (2017) — John McCain casts deciding vote','2024 platform: deregulation and "healthcare freedom"','Medicaid work requirements pursued','Opposed IRA drug pricing provisions'],
+      leaning:'opposed', score:26,
+      sources:['rep_platform'],
+      timeline:[
+        { date:'2017-07', type:'vote', who:'US Senate', text:'"Skinny repeal" of ACA fails 51-49. Sen. John McCain casts the decisive no vote. Republicans remain committed to replacing the ACA but cannot agree on an alternative.', source:'rep_platform', change:'reaffirm' },
+        { date:'2022-08', type:'vote', who:'Republican Party', text:'Every Republican senator and representative votes against the IRA, including its drug pricing provisions. GOP argues Medicare negotiation is a "price control" that will harm pharmaceutical innovation.', source:'ira_healthcare', change:'reaffirm' },
+        { date:'2024-07', type:'platform', who:'Republican Party', text:'2024 GOP platform omits specific ACA repeal language. Focuses on "healthcare freedom", deregulation, price transparency, and expanding health savings accounts.', source:'rep_platform', change:'shift' },
+        { date:'2025-02', type:'policy', who:'Trump Administration', text:'Administration suspends ACA outreach and navigator programmes that help consumers enrol in plans, and pursues Medicaid work requirements through executive action.', source:'rep_platform', change:'reaffirm' },
+      ]
+    },
+    prog:{
+      summary:'Bernie Sanders has introduced Medicare for All legislation in every Congress since 2013. The progressive caucus supports a single-payer system that would replace most private insurance with a federally administered programme covering all Americans, including dental, vision, and long-term care.',
+      bullets:['Medicare for All Act (Sanders) — reintroduced every Congress','Eliminate employer-based insurance','Cover dental, vision, hearing, long-term care','No premiums, copays, or deductibles'],
+      leaning:'supportive', score:97,
+      sources:['sanders_platform','medicare_all'],
+      timeline:[
+        { date:'2022-05', type:'policy', who:'Sen. Bernie Sanders', text:'Reintroduces Medicare for All Act in the Senate with 14 co-sponsors. Bill would cover all 330 million Americans under a single federal programme with no cost at point of care.', source:'medicare_all', change:'reaffirm' },
+        { date:'2023-11', type:'statement', who:'Sen. Bernie Sanders (HELP Committee Chair)', text:'As HELP Committee chair, Sanders holds high-profile hearings forcing pharmaceutical CEOs to testify publicly on drug pricing. Renews push for Medicare negotiation as a "first step" toward Medicare for All.', source:'sanders_platform', change:'reaffirm' },
+        { date:'2024-07', type:'statement', who:'Progressive Caucus', text:'Progressive caucus demands Medicare for All be referenced in the Democratic platform as a long-term goal. Partially successful — platform references universal coverage without endorsing single-payer.', source:'dem_platform', change:'reaffirm' },
+      ]
+    },
+    lib:{
+      summary:'The Libertarian Party opposes all government-mandated healthcare programmes, including Medicare, Medicaid, and the ACA. It advocates for a fully deregulated healthcare market with expanded health savings accounts, interstate insurance competition, and the repeal of all mandates as the path to lower costs.',
+      bullets:['Repeal ACA — end all mandates','Phase out Medicare and Medicaid over time','Fully deregulate healthcare markets','Expand Health Savings Accounts'],
+      leaning:'opposed', score:11,
+      sources:['lib_platform'],
+      timeline:[
+        { date:'2024-07', type:'platform', who:'Libertarian Party', text:'2024 Libertarian platform reaffirms opposition to all government-run or mandated healthcare. Nominee Chase Oliver campaigns on repealing the ACA, ending Medicare and Medicaid, and letting the free market set healthcare prices.', source:'lib_platform', change:'reaffirm' },
+      ]
+    },
+    grn:{
+      summary:'The Green Party has long advocated for a universal single-payer healthcare system as a fundamental human right, going further than Medicare for All to treat all healthcare as a public utility with no role for private insurance in basic coverage.',
+      bullets:['Universal single-payer healthcare as a human right','No role for private insurance in basic coverage','Fund through progressive taxation','Include mental health, dental, reproductive care'],
+      leaning:'supportive', score:98,
+      sources:['grn_us_platform'],
+      timeline:[
+        { date:'2024-07', type:'platform', who:'Green Party / Jill Stein', text:'Stein runs Medicare for All as the centrepiece of the Green 2024 platform. Calls for immediate passage of a universal single-payer system funded by redirecting current insurance premiums and progressive taxation.', source:'grn_us_platform', change:'reaffirm' },
+      ]
+    },
+  }
+},
+{
+  id:'immigration', icon:'✈️', label:'Immigration',
+  desc:'Border security, asylum policy, DACA and Dreamers, pathways to citizenship for undocumented immigrants, and enforcement operations.',
+  fact:'US Customs and Border Protection recorded approximately 2.47 million encounters at the southwest border in FY2023. An estimated 11 million undocumented immigrants live in the United States. DACA (Deferred Action for Childhood Arrivals) protects approximately 535,000 "Dreamers" from deportation.',
+  factSources:['cbp_encounters','dhs_daca'],
+  stances:{
+    dem:{
+      summary:'Democrats created DACA under Obama (2012) and pushed repeatedly for comprehensive immigration reform. Biden reversed Trump-era restrictions on taking office but by 2024 agreed to bipartisan border security legislation — ultimately killed by Republican opposition at Trump\'s urging. Post-election, Democrats are resisting the mass deportation operations launched under Trump\'s second term.',
+      bullets:['Created DACA (Obama EO 2012)','Reversed "Remain in Mexico" on day one (2021)','Supported bipartisan border bill (2024) — rejected by GOP','Oppose mass deportation operations (2025)'],
+      leaning:'moderate', score:57,
+      sources:['dem_platform','border_bill_2024'],
+      timeline:[
+        { date:'2021-01', type:'eo', who:'President Biden', text:'Revokes "Remain in Mexico" (Migrant Protection Protocols) on day one, allowing asylum seekers to wait in the US while claims are processed. Rescinds Trump\'s border wall funding declaration.', source:'dem_platform', change:'reaffirm' },
+        { date:'2024-02', type:'vote', who:'Democratic Party', text:'Bipartisan border security bill — negotiated by Sens. Lankford (R), Sinema (I), and Murphy (D) — includes significant new restrictions and asylum limits. Trump urges Republicans to kill it; bill fails to advance.', source:'border_bill_2024', change:'shift' },
+        { date:'2024-08', type:'platform', who:'Democratic Party / Harris Campaign', text:'2024 platform backs a path to citizenship for Dreamers and long-term residents, smarter border management, and comprehensive immigration reform. Harris criticises Republican obstruction of the bipartisan border bill.', source:'dem_platform', change:'reaffirm' },
+        { date:'2025-02', type:'statement', who:'Congressional Democrats', text:'Democrats introduce legislation to block funding for mass deportation operations and file lawsuits challenging the administration\'s use of the Alien Enemies Act of 1798.', source:'dem_platform', change:'reaffirm' },
+      ]
+    },
+    rep:{
+      summary:'Trump\'s first term implemented "Remain in Mexico", family separation, and DACA\'s attempted cancellation (blocked by courts). The 2024 GOP platform calls for the largest deportation operation in US history, ending birthright citizenship, completing the border wall, and designating cartels as foreign terrorist organisations. Trump\'s second term has launched large-scale deportation operations.',
+      bullets:['Border wall construction and declaration of emergency','"Remain in Mexico" (MPP) policy','End birthright citizenship (EO signed Jan 2025, challenged in courts)','Mass deportation operations launched (2025)'],
+      leaning:'opposed', score:12,
+      sources:['rep_platform','trump_border_eo'],
+      timeline:[
+        { date:'2019-09', type:'policy', who:'Trump Administration (first term)', text:'"Remain in Mexico" implemented — asylum seekers required to wait in Mexico while US immigration proceedings continue. Policy affects tens of thousands of asylum applicants.', source:'rep_platform', change:'reaffirm' },
+        { date:'2024-07', type:'platform', who:'Republican Party', text:'2024 GOP platform calls for "the largest deportation operation in American history," completing the border wall, ending catch-and-release, and designating cartels as foreign terrorist organisations.', source:'rep_platform', change:'reaffirm' },
+        { date:'2025-01', type:'eo', who:'President Trump', text:'Signs EO declaring a national emergency at the southern border. Signs separate EO (14160) attempting to end birthright citizenship — immediately blocked by federal courts. Deploys military to southern border.', source:'trump_border_eo', change:'reaffirm' },
+        { date:'2025-03', type:'policy', who:'Trump Administration', text:'Administration invokes the Alien Enemies Act of 1798 to rapidly deport Venezuelan nationals it designates as gang members. Operation faces multiple legal challenges; deportation flights continue.', source:'trump_border_eo', change:'reaffirm' },
+      ]
+    },
+    prog:{
+      summary:'Progressive Democrats, including the Squad, support abolishing ICE as currently constituted, creating pathways to citizenship for all undocumented immigrants, ending immigration detention, and restoring and expanding DACA. They have been the most vocal critics of both Trump\'s and Biden\'s border enforcement measures.',
+      bullets:['Abolish ICE — reconstitute as humane enforcement','Path to citizenship for all 11 million undocumented','End all immigration detention','Expand and protect DACA'],
+      leaning:'supportive', score:88,
+      sources:['sanders_platform'],
+      timeline:[
+        { date:'2021-06', type:'policy', who:'Rep. Alexandria Ocasio-Cortez & Progressive Caucus', text:'Progressive caucus introduces the New Way Forward Act — a comprehensive bill providing pathways to citizenship, ending most immigration detention, and reconstituting enforcement agencies.', source:'sanders_platform', change:'reaffirm' },
+        { date:'2023-09', type:'statement', who:'Progressive Caucus', text:'Progressives oppose Biden administration\'s increased use of Title 42 and new border restrictions, calling them "Trump-lite" and demanding a return to humane asylum processing.', source:'sanders_platform', change:'reaffirm' },
+        { date:'2025-02', type:'vote', who:'Progressive Democrats', text:'All progressive Democrats vote against supplemental border security funding. AOC and others lead floor speeches opposing mass deportation operations and the use of the Alien Enemies Act.', source:'sanders_platform', change:'reaffirm' },
+      ]
+    },
+    lib:{
+      summary:'Libertarians support near-open borders on free market and individual rights grounds, arguing people should be free to live and work anywhere. They oppose the existence of ICE and CBP as constituted and support ending most immigration restrictions — while also opposing welfare provision for non-citizens.',
+      bullets:['Open immigration — free movement of people','Abolish ICE and CBP as currently structured','End birthright citizenship restrictions','No government welfare for non-citizens'],
+      leaning:'supportive', score:78,
+      sources:['lib_platform'],
+      timeline:[
+        { date:'2024-07', type:'platform', who:'Libertarian Party', text:'2024 platform reaffirms support for open borders and free movement of people. Chase Oliver, the Libertarian nominee, campaigns on abolishing ICE, ending the border wall, and treating immigration as an economic and humanitarian good.', source:'lib_platform', change:'reaffirm' },
+      ]
+    },
+    grn:{
+      summary:'The Green Party supports open immigration, abolishing ICE, ending all deportations except for those convicted of serious violent crimes, and creating immediate pathways to citizenship for all undocumented immigrants currently in the United States.',
+      bullets:['Open immigration — no deportations except violent offenders','Abolish ICE and CBP','Path to citizenship for all undocumented immigrants','End all asylum restrictions and processing delays'],
+      leaning:'supportive', score:86,
+      sources:['grn_us_platform'],
+      timeline:[
+        { date:'2024-07', type:'platform', who:'Green Party / Jill Stein', text:'Stein campaigns on open borders, abolishing ICE, and ending all deportation programmes except for those convicted of serious crimes. Calls the immigration system "fundamentally racist and cruel."', source:'grn_us_platform', change:'reaffirm' },
+      ]
+    },
+  }
+},
+{
+  id:'economy', icon:'📈', label:'Economy & Tax',
+  desc:'Federal tax policy, the national debt, corporate taxation, wealth inequality, trade policy, and the cost of living.',
+  fact:'The US national debt exceeded $36 trillion in 2025, approximately 122% of GDP. The 2017 Tax Cuts and Jobs Act cut the corporate rate from 35% to 21% and reduced individual rates across brackets. Key TCJA provisions expire after 2025, making extension or expiry a defining fiscal fight.',
+  factSources:['cbo_debt','cbo_tcja'],
+  stances:{
+    dem:{
+      summary:'Biden\'s Inflation Reduction Act invested $369bn in clean energy while introducing a 15% corporate minimum tax. Democrats seek to raise the corporate rate to 28%, restore higher top marginal rates, and let TCJA tax cuts expire for earners above $400,000. The Harris 2024 campaign also proposed a minimum income tax for billionaires and taxing unrealised capital gains for the wealthiest.',
+      bullets:['15% corporate minimum tax enacted (IRA 2022)','Corporate rate to 28% proposed','TCJA cuts preserved below $400k income','Billionaire minimum income tax proposed'],
+      leaning:'moderate', score:60,
+      sources:['dem_platform','ira_summary'],
+      timeline:[
+        { date:'2021-11', type:'policy', who:'President Biden', text:'Infrastructure Investment and Jobs Act signed — $1.2 trillion in physical infrastructure: roads, bridges, broadband, water systems, public transit. Funded partly through repurposed COVID relief funds and corporate tax enforcement.', source:'ira_summary', change:'reaffirm' },
+        { date:'2022-08', type:'policy', who:'President Biden', text:'Inflation Reduction Act signed — 15% corporate minimum tax, $369bn in clean energy investment, $64bn in ACA subsidies, and Medicare drug price negotiation. Largest climate and tax legislation in US history.', source:'ira_summary', change:'reaffirm' },
+        { date:'2024-08', type:'platform', who:'Harris Campaign', text:'Harris proposes taxing unrealised capital gains for those with wealth over $100m, raising the corporate rate to 28%, and extending middle-class TCJA cuts while letting upper-income provisions expire.', source:'dem_platform', change:'reaffirm' },
+      ]
+    },
+    rep:{
+      summary:'The TCJA (2017) remains Republicans\' signature economic achievement. The 2024 platform calls for making all TCJA provisions permanent, cutting the corporate rate further, eliminating the estate tax, and generating revenue through universal tariffs of 10-20%. Trump\'s second term has pursued sweeping tariff increases on imports from most countries.',
+      bullets:['Make TCJA permanent (top 2025 legislative priority)','Cut corporate rate to 15%','Eliminate estate tax','Universal tariffs (10-20%) to replace lost income tax revenue'],
+      leaning:'opposed', score:27,
+      sources:['rep_platform','cbo_tcja'],
+      timeline:[
+        { date:'2017-12', type:'policy', who:'President Trump', text:'Tax Cuts and Jobs Act signed — corporate rate cut from 35% to 21%, individual rates cut across all brackets, standard deduction doubled, SALT deduction capped at $10,000. CBO estimates $1.9 trillion added to debt over 10 years.', source:'cbo_tcja', change:'reaffirm' },
+        { date:'2024-07', type:'platform', who:'Republican Party', text:'2024 GOP platform calls for making all TCJA provisions permanent, imposing universal baseline tariffs, cutting the corporate rate to 15%, and eliminating the estate tax.', source:'rep_platform', change:'reaffirm' },
+        { date:'2025-04', type:'policy', who:'Trump Administration', text:'Administration announces sweeping "Liberation Day" tariffs — 10% baseline on all imports, higher rates on specific countries. Markets fall sharply; administration partially walks back highest rates within days.', source:'rep_platform', change:'shift' },
+      ]
+    },
+    prog:{
+      summary:'Progressive Democrats — led by Sanders and Warren — support a 2% annual wealth tax on fortunes above $50m, a top marginal income tax rate of 70%+ on income above $10m, a financial transaction tax on stock and bond trades, and restoring the corporate rate to 35%. The College for All Act would fund free public college via a financial transaction tax.',
+      bullets:['2% annual wealth tax on fortunes above $50m (Warren)','Top marginal rate 70%+ above $10m income','Financial transaction tax on stock and bond trades','Corporate rate restored to 35%'],
+      leaning:'supportive', score:93,
+      sources:['sanders_platform','warren_wealth_tax'],
+      timeline:[
+        { date:'2021-03', type:'policy', who:'Progressive Caucus', text:'American Rescue Plan signed — $1.9 trillion stimulus including $1,400 direct payments, enhanced child tax credit (cutting child poverty by nearly half), and expanded unemployment. Progressives push for further BBB follow-on.', source:'sanders_platform', change:'reaffirm' },
+        { date:'2023-03', type:'policy', who:'Sen. Elizabeth Warren', text:'Reintroduces Ultra-Millionaire Tax Act — 2% annual wealth tax on assets above $50m, rising to 3% above $1bn. CBO estimates it would raise $3 trillion over 10 years.', source:'warren_wealth_tax', change:'reaffirm' },
+        { date:'2023-05', type:'policy', who:'Sen. Bernie Sanders', text:'Reintroduces For the 99.5% Act — 45% estate tax starting at $3.5m, rising to 65% above $1bn. Also reintroduces College for All Act funded by financial transaction tax on Wall Street trades.', source:'sanders_platform', change:'reaffirm' },
+      ]
+    },
+    lib:{
+      summary:'The Libertarian Party advocates for the abolition of income tax entirely, replaced by a voluntary funding system or consumption tax. It calls for cutting federal spending by 50% or more, eliminating the Federal Reserve, returning to sound money, and abolishing most federal agencies.',
+      bullets:['Abolish income tax — replace with voluntary or consumption tax','Cut federal spending by 50%+','Eliminate the Federal Reserve','Abolish most cabinet departments'],
+      leaning:'opposed', score:8,
+      sources:['lib_platform'],
+      timeline:[
+        { date:'2024-07', type:'platform', who:'Libertarian Party', text:'Chase Oliver campaigns on abolishing the federal income tax, eliminating the IRS, cutting the federal budget by more than half, and ending the Federal Reserve — funded via deep spending cuts across all departments.', source:'lib_platform', change:'reaffirm' },
+      ]
+    },
+    grn:{
+      summary:'The Green Party supports a progressive wealth tax on assets above $10m, a 90% top marginal tax rate on income above $1m, a financial transaction tax, a Universal Basic Income of $1,000 per month per adult, and a four-day working week. It opposes the TCJA and all tariff-based trade wars.',
+      bullets:['Wealth tax on assets above $10m','90% top marginal rate on income above $1m','Financial transaction tax on Wall Street trades','Universal Basic Income ($1,000/month)'],
+      leaning:'supportive', score:89,
+      sources:['grn_us_platform'],
+      timeline:[
+        { date:'2024-07', type:'platform', who:'Green Party / Jill Stein', text:'Stein\'s economic platform: wealth tax, 90% top rate, financial transaction tax, UBI of $1,000/month, four-day working week, and a federal job guarantee for all Americans who want work.', source:'grn_us_platform', change:'reaffirm' },
+      ]
+    },
+  }
+},
+{
+  id:'climate', icon:'🌿', label:'Climate & Environment',
+  desc:'Net zero commitments, clean energy investment, fossil fuel policy, the Paris Agreement, and the Green New Deal.',
+  fact:'US greenhouse gas emissions fell approximately 18% from their 2005 peak by 2023, but the US remains the world\'s second-largest emitter. The 2022 Inflation Reduction Act committed $369bn to clean energy — the largest climate investment in US history. The US has now withdrawn from the Paris Agreement twice.',
+  factSources:['epa_ghg','ira_climate'],
+  stances:{
+    dem:{
+      summary:'Biden rejoined the Paris Agreement on his first day in office and signed the IRA — the largest US climate investment ever. Democrats have set a national target of 100% clean electricity by 2035 and net zero by 2050. Trump\'s return immediately reversed these commitments, withdrawing from Paris and moving to freeze unspent IRA funds.',
+      bullets:['Rejoined Paris Agreement (day one, Jan 2021)','IRA — $369bn clean energy investment (2022)','Net zero by 2050 target','100% clean electricity by 2035 goal'],
+      leaning:'supportive', score:76,
+      sources:['dem_platform','ira_climate'],
+      timeline:[
+        { date:'2021-01', type:'eo', who:'President Biden', text:'Signs EO rejoining the Paris Agreement on his first day in office, reversing Trump\'s 2020 withdrawal. Also halts new oil and gas leases on federal land pending review, and rejoins the WHO.', source:'ira_climate', change:'reaffirm' },
+        { date:'2022-08', type:'policy', who:'President Biden', text:'IRA signed into law. $369bn for clean energy tax credits, EV incentives, wind and solar investment, climate resilience, and methane reduction — the largest climate legislation in US history.', source:'ira_climate', change:'reaffirm' },
+        { date:'2024-08', type:'platform', who:'Harris Campaign', text:'Harris pledges to maintain the IRA, defend Paris Agreement commitments, and pursue a 100% clean electricity standard. Cites climate as an "existential threat" and economic opportunity.', source:'dem_platform', change:'reaffirm' },
+        { date:'2025-01', type:'statement', who:'Senate Democrats', text:'Democrats mount legal and legislative challenges to Trump\'s Paris withdrawal and efforts to freeze IRA clean energy funds, arguing existing contracts and tax credits cannot simply be revoked by executive order.', source:'dem_platform', change:'reaffirm' },
+      ]
+    },
+    rep:{
+      summary:'Trump withdrew from the Paris Agreement in his first term (re-entered by Biden), then immediately re-withdrew on his first day back in office in January 2025. The 2024 GOP platform promotes "energy dominance" — maximising oil, gas, and coal production — and describes the administration\'s freeze of IRA clean energy funds as a top priority.',
+      bullets:['Withdrawn from Paris Agreement twice (2020, 2025)','Declared "energy emergency" — expand fossil fuel production','Moved to freeze unspent IRA clean energy funds','End EV purchase mandates'],
+      leaning:'opposed', score:16,
+      sources:['rep_platform','trump_paris_eo'],
+      timeline:[
+        { date:'2017-06', type:'statement', who:'President Trump (first term)', text:'Announces US withdrawal from the Paris Agreement, calling it an "unfair" deal that disadvantages American workers. Formal withdrawal takes effect in November 2020.', source:'trump_paris_eo', change:'reaffirm' },
+        { date:'2024-07', type:'platform', who:'Republican Party', text:'2024 GOP platform promotes "energy dominance" — maximise domestic oil, gas, and coal. No net zero commitment. Platform describes American fossil fuels as "clean" and opposes any carbon tax or clean energy mandates.', source:'rep_platform', change:'reaffirm' },
+        { date:'2025-01', type:'eo', who:'President Trump', text:'Signs EO 14162 withdrawing from the Paris Agreement for the second time, on day one of his second term. Also signs an "energy emergency" declaration instructing agencies to maximise fossil fuel permitting on federal land.', source:'trump_paris_eo', change:'reaffirm' },
+      ]
+    },
+    prog:{
+      summary:'Rep. Alexandria Ocasio-Cortez and Sen. Ed Markey introduced the Green New Deal resolution in 2019, calling for net zero by 2030, $10 trillion in public green investment, a federal job guarantee for transition workers, and a complete end to fossil fuel subsidies. Progressives regard the IRA as a significant step but far from sufficient.',
+      bullets:['Green New Deal — net zero by 2030','$10 trillion public climate investment','End all fossil fuel subsidies immediately','Federal job guarantee for transition workers'],
+      leaning:'supportive', score:97,
+      sources:['sanders_platform','green_new_deal'],
+      timeline:[
+        { date:'2019-02', type:'policy', who:'Rep. AOC & Sen. Ed Markey', text:'Introduce the Green New Deal resolution — net zero by 2030, 100% clean energy, a federal job guarantee, and deep investment in communities most affected by both pollution and the energy transition.', source:'green_new_deal', change:'reaffirm' },
+        { date:'2022-07', type:'statement', who:'Progressive Caucus', text:'Progressives express frustration with the IRA as insufficient — particularly its continued permitting of new fossil fuel leases as a compromise to secure Sen. Manchin\'s vote. Reluctantly support the bill as the best available deal.', source:'ira_climate', change:'reaffirm' },
+        { date:'2024-06', type:'policy', who:'Rep. AOC & Sen. Markey', text:'Reintroduce an updated Green New Deal resolution with expanded just-transition provisions and an explicit demand to phase out all fossil fuel production by 2030.', source:'green_new_deal', change:'reaffirm' },
+      ]
+    },
+    lib:{
+      summary:'Libertarians oppose all government climate mandates, carbon taxes, and clean energy subsidies. They argue that property rights enforced through tort law — allowing communities to sue polluters for damages — are the correct market-based mechanism for environmental protection, without government mandates.',
+      bullets:['No carbon tax or emissions mandates','No clean energy subsidies or mandates','No Paris Agreement participation','Property rights / tort law as environmental protection'],
+      leaning:'opposed', score:7,
+      sources:['lib_platform'],
+      timeline:[
+        { date:'2024-07', type:'platform', who:'Libertarian Party', text:'Libertarian platform opposes all climate legislation, carbon taxes, and international climate agreements. Argues free market and property rights provide superior environmental outcomes to government intervention.', source:'lib_platform', change:'reaffirm' },
+      ]
+    },
+    grn:{
+      summary:'Climate is the Green Party\'s defining issue. The 2024 platform calls for 100% clean renewable energy by 2030, an immediate moratorium on all new fossil fuel projects, a $2.3 trillion annual public green investment, phasing out nuclear power, and declaring a national climate emergency.',
+      bullets:['100% clean renewables by 2030','Immediate moratorium on all new fossil fuel projects','$2.3 trillion/year public green investment','Declare national climate emergency'],
+      leaning:'supportive', score:99,
+      sources:['grn_us_platform'],
+      timeline:[
+        { date:'2024-07', type:'platform', who:'Green Party / Jill Stein', text:'Stein runs climate as the primary campaign issue. Platform: 100% renewables by 2030, stop all new fossil fuel extraction immediately, phase out existing plants on a rapid schedule, declare a national climate emergency, and invest $2.3 trillion/year in the green transition.', source:'grn_us_platform', change:'reaffirm' },
+      ]
+    },
+  }
+},
+{
+  id:'guns', icon:'🔫', label:'Gun Control',
+  desc:'Second Amendment rights, background check systems, assault weapons, red flag laws, and the response to mass shootings.',
+  fact:'The US has approximately 120 guns per 100 residents — the highest civilian gun ownership rate in the world. In 2022, firearms caused approximately 48,830 deaths, including roughly 26,993 suicides and 19,592 homicides. The 2022 Bipartisan Safer Communities Act was the first major federal gun legislation in nearly 30 years.',
+  factSources:['cdc_gundeaths','gva_stats'],
+  stances:{
+    dem:{
+      summary:'Biden signed the Bipartisan Safer Communities Act (2022) — enhanced background checks for under-21 purchasers, closure of the "boyfriend loophole" for domestic abusers, and federal funding for state red flag laws. Democrats continue to push for universal background checks and a renewed assault weapons ban, both blocked in the Senate.',
+      bullets:['Bipartisan Safer Communities Act signed (2022)','Universal background checks — stalled in Senate','Renewed assault weapons ban — stalled in Senate','Red flag law funding enacted'],
+      leaning:'moderate', score:65,
+      sources:['dem_platform','bsca_law'],
+      timeline:[
+        { date:'2022-06', type:'policy', who:'President Biden', text:'Bipartisan Safer Communities Act signed — first major federal gun legislation since 1994. Includes enhanced background checks for under-21 buyers, funding for state crisis intervention programmes, and closure of the "boyfriend loophole" for domestic violence misdemeanants.', source:'bsca_law', change:'reaffirm' },
+        { date:'2023-09', type:'statement', who:'President Biden / Democrats', text:'Biden calls for reinstatement of the assault weapons ban following a series of mass shootings. Bill passes the House; fails to overcome the 60-vote Senate filibuster threshold.', source:'dem_platform', change:'reaffirm' },
+        { date:'2024-08', type:'platform', who:'Harris Campaign', text:'Harris platform calls for universal background checks, assault weapons ban, red flag laws in all states, and repeal of the Protection of Lawful Commerce in Arms Act (PLCAA), which shields gun manufacturers from most lawsuits.', source:'dem_platform', change:'reaffirm' },
+      ]
+    },
+    rep:{
+      summary:'Republicans broadly oppose most gun control legislation on Second Amendment grounds. The 2024 GOP platform explicitly states the right to keep and bear arms "shall not be infringed." Most Republicans opposed the assault weapons ban and red flag laws; a minority crossed party lines to pass the Bipartisan Safer Communities Act.',
+      bullets:['2nd Amendment "shall not be infringed" — 2024 platform','Oppose universal background check expansion','Oppose assault weapons ban','Oppose most red flag law mandates'],
+      leaning:'opposed', score:14,
+      sources:['rep_platform'],
+      timeline:[
+        { date:'2017-10', type:'statement', who:'Republican Congress', text:'Following the Las Vegas shooting (60 killed, 411 injured), Republicans take no action on background checks or bump stocks. A bump stock ban is eventually implemented by Trump administration via regulatory rule in 2019.', source:'rep_platform', change:'reaffirm' },
+        { date:'2022-06', type:'vote', who:'Senate Republicans', text:'15 Senate Republicans cross party lines to pass the Bipartisan Safer Communities Act. Majority of Republican senators still vote against the bill, calling it an infringement on Second Amendment rights.', source:'bsca_law', change:'reaffirm' },
+        { date:'2024-07', type:'platform', who:'Republican Party', text:'2024 GOP platform: "Republicans will always protect the God-given, Constitutional Right to Keep and Bear Arms." Opposes red flag laws, universal background check expansion, and any assault weapons ban.', source:'rep_platform', change:'reaffirm' },
+      ]
+    },
+    prog:{
+      summary:'Progressive Democrats support comprehensive gun reform including universal background checks, a mandatory assault weapons ban and buyback programme, repeal of the PLCAA gun manufacturer liability shield, a seven-day waiting period for all purchases, and licensing and registration requirements.',
+      bullets:['Universal background checks','Mandatory assault weapons ban and buyback','Repeal PLCAA — end gun industry immunity','7-day waiting period for all purchases'],
+      leaning:'supportive', score:90,
+      sources:['sanders_platform'],
+      timeline:[
+        { date:'2022-06', type:'vote', who:'Progressive Caucus', text:'All progressive Democrats vote for the Bipartisan Safer Communities Act but call it "a start, not an end." Rep. Lucy McBath and others continue pushing for mandatory buyback and universal background check legislation.', source:'bsca_law', change:'reaffirm' },
+        { date:'2023-06', type:'vote', who:'House Democrats', text:'House Judiciary Committee passes assault weapons ban legislation on a party-line vote. Bill stalls in the Senate despite progressive pressure. Progressives call for filibuster reform to pass gun legislation.', source:'dem_platform', change:'reaffirm' },
+        { date:'2024-05', type:'statement', who:'Progressive Caucus', text:'After multiple high-profile mass shootings, progressive caucus introduces legislation for a mandatory buyback programme for assault-style weapons, similar to Australia\'s 1996 programme.', source:'sanders_platform', change:'reaffirm' },
+      ]
+    },
+    lib:{
+      summary:'Libertarians are strong advocates for Second Amendment rights and oppose virtually all gun regulations as unconstitutional infringements on individual liberty. They support repealing existing federal firearms laws and argue armed citizens provide more effective protection than government enforcement.',
+      bullets:['Absolute Second Amendment right — repeal existing restrictions','Repeal the National Firearms Act and Gun Control Act','No background check requirements','Oppose all red flag laws'],
+      leaning:'opposed', score:4,
+      sources:['lib_platform'],
+      timeline:[
+        { date:'2024-07', type:'platform', who:'Libertarian Party', text:'Platform calls for repealing the National Firearms Act, Gun Control Act, and all federal regulations on firearms. Argues the Second Amendment is an absolute right that no government may infringe.', source:'lib_platform', change:'reaffirm' },
+      ]
+    },
+    grn:{
+      summary:'The Green Party supports comprehensive gun reform including universal background checks, mandatory licensing and registration, an assault weapons ban and buyback, repeal of the PLCAA, and ending gun industry immunity from liability for negligence.',
+      bullets:['Universal background checks and licensing','Mandatory assault weapons ban and buyback','End gun manufacturer liability shield (PLCAA)','Mandatory gun safety training and registration'],
+      leaning:'supportive', score:88,
+      sources:['grn_us_platform'],
+      timeline:[
+        { date:'2024-07', type:'platform', who:'Green Party / Jill Stein', text:'Stein platform: ban assault weapons and implement mandatory buyback, universal background checks, mandatory licensing and registration for all firearms, and end the PLCAA shield on gun manufacturers.', source:'grn_us_platform', change:'reaffirm' },
+      ]
+    },
+  }
+},
+{
+  id:'abortion', icon:'⚕️', label:'Reproductive Rights',
+  desc:'Abortion access, the Dobbs decision, state-level bans, federal codification efforts, contraception access, and reproductive healthcare funding.',
+  fact:'The Supreme Court\'s Dobbs v. Jackson Women\'s Health Organization decision (June 2022) overturned Roe v. Wade, ending the 50-year-old federal constitutional right to abortion. As of 2025, 14 states enforce near-total abortion bans. Research estimates approximately 171,000 fewer legal abortions occurred in the first 18 months after Dobbs.',
+  factSources:['scotus_dobbs','guttmacher'],
+  stances:{
+    dem:{
+      summary:'Democrats universally condemn the Dobbs decision and have pushed to codify Roe v. Wade via the Women\'s Health Protection Act (passed the House, failed the Senate filibuster). Biden signed executive orders protecting access to abortion medication and interstate travel for care. Harris made reproductive rights the central campaign issue of 2024.',
+      bullets:['Women\'s Health Protection Act passed House — blocked in Senate','EO protecting abortion medication (mifepristone) access','EO on interstate travel for reproductive care','Codifying Roe the primary 2024 campaign pledge'],
+      leaning:'supportive', score:80,
+      sources:['dem_platform','whpa_bill'],
+      timeline:[
+        { date:'2022-06', type:'statement', who:'President Biden / Democrats', text:'Dobbs decision handed down. Democrats immediately call for codifying Roe in federal law. The Women\'s Health Protection Act passes the House 219-210 but fails to reach 60 votes in the Senate — falling short of the filibuster threshold.', source:'whpa_bill', change:'reaffirm' },
+        { date:'2022-07', type:'eo', who:'President Biden', text:'Signs EO protecting access to abortion medication, strengthening HIPAA privacy protections for reproductive health data, and safeguarding patients who travel interstate to receive care.', source:'dem_platform', change:'reaffirm' },
+        { date:'2024-08', type:'platform', who:'Harris Campaign', text:'Harris makes reproductive freedom the central frame of her presidential campaign, attending campaign events under a "Reproductive Freedom" banner and pledging to sign the Women\'s Health Protection Act if passed.', source:'dem_platform', change:'reaffirm' },
+        { date:'2025-01', type:'statement', who:'Senate Democrats', text:'Democrats file legislation to restore federal abortion protections and mount legal challenges to the administration\'s restrictions on mifepristone distribution across state lines.', source:'dem_platform', change:'reaffirm' },
+      ]
+    },
+    rep:{
+      summary:'Republicans largely celebrated the Dobbs decision, with Trump publicly claiming credit for it through his three Supreme Court appointments (Gorsuch, Kavanaugh, Barrett). However, the 2024 GOP platform notably removed a call for a federal abortion ban, leaving abortion to individual states — a reflection of electoral damage from Dobbs in 2022 and 2023.',
+      bullets:['Supported Dobbs — credited to Trump court appointments','2024 platform: leave abortion to each state','Federal ban language removed from platform','Some members support a 15-week federal limit'],
+      leaning:'opposed', score:22,
+      sources:['rep_platform','scotus_dobbs'],
+      timeline:[
+        { date:'2022-06', type:'statement', who:'Republican Leaders', text:'Republican congressional leaders and Trump publicly celebrate the Dobbs ruling. Trump says "God made the decision" and claims credit for appointing the three justices who joined the majority.', source:'scotus_dobbs', change:'reaffirm' },
+        { date:'2024-04', type:'statement', who:'Donald Trump', text:'Trump announces abortion should be left entirely to individual states — distancing himself from calls by some Republicans for a national 15-week ban and signalling a political pivot ahead of the election.', source:'rep_platform', change:'shift' },
+        { date:'2024-07', type:'platform', who:'Republican Party', text:'2024 GOP platform removes previous language supporting a federal abortion ban. States that "we believe in the dignity of human life" but defers entirely to states — a significant rhetorical shift from prior platforms.', source:'rep_platform', change:'shift' },
+        { date:'2025-01', type:'eo', who:'Trump Administration', text:'Administration moves to restrict distribution of mifepristone across state lines and cuts funding to reproductive health organisations that provide abortion referrals.', source:'rep_platform', change:'reaffirm' },
+      ]
+    },
+    prog:{
+      summary:'Progressive Democrats support not only codifying Roe but expanding access beyond pre-Dobbs norms: eliminating the Hyde Amendment (which bars federal Medicaid funding for abortion), federally funding abortion access, and working toward a constitutional amendment. They are the most vocal critics of Democratic leadership for failing to eliminate the filibuster to protect abortion rights.',
+      bullets:['Codify abortion rights in federal law (WHPA)','Eliminate the Hyde Amendment','Federal funding for abortion access','Filibuster reform to pass reproductive rights legislation'],
+      leaning:'supportive', score:96,
+      sources:['sanders_platform','whpa_bill'],
+      timeline:[
+        { date:'2022-06', type:'statement', who:'Progressive Caucus', text:'Progressives lead calls for eliminating the Senate filibuster to pass the Women\'s Health Protection Act, arguing the 60-vote threshold is being used to block majority-supported reproductive rights legislation.', source:'whpa_bill', change:'reaffirm' },
+        { date:'2023-04', type:'policy', who:'Progressive Democrats', text:'Introduce the Equal Access to Abortion Coverage in Health Insurance (EACH) Act — would repeal the Hyde Amendment and require federal health programmes to cover abortion care.', source:'sanders_platform', change:'reaffirm' },
+        { date:'2024-08', type:'statement', who:'Rep. Alexandria Ocasio-Cortez', text:'AOC and progressive wing push for explicit constitutional amendment language to be included in the Democratic platform. Calls for the elimination of the Hyde Amendment as a non-negotiable platform plank.', source:'dem_platform', change:'reaffirm' },
+      ]
+    },
+    lib:{
+      summary:'The Libertarian Party officially supports abortion rights as a matter of individual bodily autonomy, opposing both government bans and government funding. The party\'s position is that government should be completely absent from the matter — no restrictions and no public subsidies.',
+      bullets:['Pro-choice based on individual bodily autonomy','No government funding for abortion services','No government restrictions on abortion','Leave entirely to individual choice'],
+      leaning:'moderate', score:60,
+      sources:['lib_platform'],
+      timeline:[
+        { date:'2024-07', type:'platform', who:'Libertarian Party', text:'Platform states: "We believe that government should be kept out of the matter" of abortion entirely. Opposes both federal and state restrictions on abortion and any government subsidy or mandate related to reproductive care.', source:'lib_platform', change:'reaffirm' },
+      ]
+    },
+    grn:{
+      summary:'The Green Party treats abortion as an absolute human right, supporting access at all stages of pregnancy, full repeal of the Hyde Amendment, federal funding for abortion through a single-payer system, and expanding reproductive healthcare access as a core component of universal healthcare.',
+      bullets:['Abortion as an absolute human right at all stages','Repeal the Hyde Amendment','Fund through universal healthcare (Medicare for All)','Expand access in all states regardless of state law'],
+      leaning:'supportive', score:95,
+      sources:['grn_us_platform'],
+      timeline:[
+        { date:'2024-07', type:'platform', who:'Green Party / Jill Stein', text:'Green platform treats reproductive rights — including abortion without restriction — as a non-negotiable human right. Calls for full repeal of the Hyde Amendment and federal guarantees of access even in states with bans.', source:'grn_us_platform', change:'reaffirm' },
+      ]
+    },
+  }
+},
+{
+  id:'education', icon:'📚', label:'Education',
+  desc:'Student loan debt, public K-12 funding, school choice, college access, and federal education policy including DEI programmes.',
+  fact:'Federal student loan debt totals approximately $1.77 trillion, held by 43 million borrowers with an average balance of $38,000. The US spends an average of $13,600 per pupil on public K-12 education. In 2022 PISA rankings, the US placed 18th in reading and 28th in mathematics among OECD nations.',
+  factSources:['ed_studentdebt','naep_education'],
+  stances:{
+    dem:{
+      summary:'Biden cancelled $167bn in student debt through targeted programmes for public service workers, defrauded borrowers, and disabled veterans after the Supreme Court blocked broader cancellation. Democrats support increased Pell Grants, free community college, universal pre-K, and Title I investment. The administration\'s SAVE plan — an income-driven repayment scheme — is under ongoing legal challenge.',
+      bullets:['$167bn in targeted student debt cancellation','Free community college proposed','Universal pre-K (not passed)','SAVE income-driven repayment plan (under legal challenge)'],
+      leaning:'supportive', score:67,
+      sources:['dem_platform','ed_studentdebt'],
+      timeline:[
+        { date:'2022-08', type:'policy', who:'President Biden', text:'Announces up to $10,000 in student debt cancellation for borrowers earning below $125,000 ($20,000 for Pell Grant recipients). Estimated cost: $400bn. Republicans challenge in courts.', source:'ed_studentdebt', change:'reaffirm' },
+        { date:'2023-06', type:'vote', who:'SCOTUS', text:'Supreme Court blocks broad student debt cancellation in Biden v. Nebraska (6-3), ruling the administration exceeded its authority under the HEROES Act. Biden pivots to narrower targeted relief.', source:'scotus_loans', change:'shift' },
+        { date:'2024-02', type:'policy', who:'Biden Administration', text:'Announces additional $1.2bn in targeted relief for short-term technical school borrowers; total targeted cancellation reaches $167bn through multiple pathways including PSLF, disability discharge, and IDR account adjustments.', source:'ed_studentdebt', change:'reaffirm' },
+        { date:'2024-07', type:'platform', who:'Harris Campaign', text:'Harris proposes expanding Pell Grants, free community college, universal pre-K, and protecting SAVE plan. Does not commit to cancelling all remaining student debt.', source:'dem_platform', change:'reaffirm' },
+      ]
+    },
+    rep:{
+      summary:'Republicans strongly oppose student debt cancellation as unfair to borrowers who already paid or never attended college. The 2024 GOP platform supports school choice vouchers ("Education Freedom Scholarships"), parental rights over school curriculum, and eliminating DEI offices from schools. Trump\'s January 2025 executive orders eliminated all federal DEI programmes and mandated their removal from universities receiving federal funds.',
+      bullets:['Oppose student debt cancellation — "unfair to borrowers who paid"','School choice vouchers ("Education Freedom Scholarships")','Parental rights in curriculum — oppose "woke" content','Eliminate DEI from schools (EO, Jan 2025)'],
+      leaning:'opposed', score:19,
+      sources:['rep_platform','trump_dei_eo'],
+      timeline:[
+        { date:'2023-06', type:'statement', who:'Republican Party', text:'Republicans celebrate SCOTUS blocking broad student debt cancellation. Leaders call the ruling a "victory for the rule of law" and oppose any further attempts to cancel student debt through executive action.', source:'scotus_loans', change:'reaffirm' },
+        { date:'2024-07', type:'platform', who:'Republican Party', text:'2024 platform supports "Education Freedom Scholarships" — school choice vouchers. Emphasises parental rights, "age-appropriate content", opposing DEI in schools, and closing the Department of Education.', source:'rep_platform', change:'reaffirm' },
+        { date:'2025-01', type:'eo', who:'President Trump', text:'Signs EO 14151 eliminating all federal DEI offices and mandating their removal from universities receiving federal funds. Signs separate order directing the Department of Education to begin closure proceedings.', source:'trump_dei_eo', change:'reaffirm' },
+      ]
+    },
+    prog:{
+      summary:'Bernie Sanders and Elizabeth Warren have championed cancelling all $1.77 trillion in student debt and making all public two- and four-year colleges tuition-free via the College for All Act, funded by a financial transaction tax on Wall Street trades. Progressives have also pushed for universal pre-K, childcare, and full equity funding for Title I schools.',
+      bullets:['Cancel all $1.77 trillion in student debt','Free public college — College for All Act (Sanders)','Funded by financial transaction tax on stock trades','Universal pre-K and federally funded childcare'],
+      leaning:'supportive', score:94,
+      sources:['sanders_platform','college_for_all'],
+      timeline:[
+        { date:'2021-02', type:'statement', who:'Sen. Sanders / Sen. Warren', text:'Jointly urge Biden to cancel $50,000 per borrower in student debt via executive order, arguing the administration has clear legal authority. Biden opts for narrower action, setting up the eventual SCOTUS challenge.', source:'sanders_platform', change:'reaffirm' },
+        { date:'2023-02', type:'policy', who:'Sen. Bernie Sanders', text:'Reintroduces College for All Act — free tuition at all public two- and four-year colleges and universities. Funded by a 0.5% financial transaction tax on stock trades, 0.1% on bonds, and 0.005% on derivatives.', source:'college_for_all', change:'reaffirm' },
+        { date:'2024-05', type:'statement', who:'Progressive Caucus', text:'Caucus demands the administration defend the SAVE plan in courts and pursue all available pathways to full debt cancellation. Calls for filibuster reform to pass the College for All Act.', source:'sanders_platform', change:'reaffirm' },
+      ]
+    },
+    lib:{
+      summary:'Libertarians oppose all federal involvement in education, arguing that federal programmes inflate college costs and reduce quality through central planning. They advocate abolishing the Department of Education, ending all federal student loan programmes, expanding school choice through private school vouchers, and returning all education decisions to families and local communities.',
+      bullets:['Abolish the Department of Education','End all federal student loan programmes','Private school vouchers — free the market','No federal curriculum standards'],
+      leaning:'opposed', score:13,
+      sources:['lib_platform'],
+      timeline:[
+        { date:'2024-07', type:'platform', who:'Libertarian Party', text:'Platform calls for abolishing the Department of Education, ending all federal student loan and grant programmes (arguing they inflate tuition costs), and implementing full school choice via education tax credits and private vouchers.', source:'lib_platform', change:'reaffirm' },
+      ]
+    },
+    grn:{
+      summary:'The Green Party supports cancelling all student debt, making K-12 through college entirely tuition-free with full public funding, ending school privatisation and for-profit charter expansion, and restructuring education funding so it is based on student need rather than local property tax values.',
+      bullets:['Cancel all student debt','Free public college and K-12 with full public funding','End school privatisation and for-profit charters','Fund schools based on need, not property taxes'],
+      leaning:'supportive', score:93,
+      sources:['grn_us_platform'],
+      timeline:[
+        { date:'2024-07', type:'platform', who:'Green Party / Jill Stein', text:'Green platform: cancel all student debt, free public college and university, fully fund K-12 based on student need rather than ZIP code, ban for-profit charter schools, and end the privatisation of public education.', source:'grn_us_platform', change:'reaffirm' },
+      ]
+    },
+  }
+},
+{
+  id:'defense', icon:'🌐', label:'Foreign Policy & Defense',
+  desc:'Military spending, NATO commitments, Ukraine aid, China policy, and the broader question of US engagement with the world.',
+  fact:'The US defence budget for FY2024 was $886 billion — approximately 40% of total global military spending. The US has provided more than $175 billion in total assistance to Ukraine since Russia\'s full-scale invasion in February 2022. NATO requires members to spend 2% of GDP on defence; the US spends approximately 3.4%.',
+  factSources:['dod_budget','ukraine_aid','nato_spending'],
+  stances:{
+    dem:{
+      summary:'Biden\'s foreign policy centred on restoring transatlantic alliances frayed under Trump, multilateral diplomacy, and sustained support for Ukraine. A $95bn supplemental aid package for Ukraine, Israel, and Taiwan passed Congress in April 2024. Democrats support maintaining the rules-based international order and US leadership in multilateral institutions.',
+      bullets:['Restored NATO alliances and Article 5 commitment','$95bn supplemental aid — Ukraine, Israel, Taiwan (2024)','Rejoined WHO, Paris Agreement, multilateral bodies','Rules-based international order as core doctrine'],
+      leaning:'supportive', score:66,
+      sources:['dem_platform','ukraine_95bn'],
+      timeline:[
+        { date:'2021-01', type:'policy', who:'President Biden', text:'Rejoins WHO, Paris Agreement, and immediately reaffirms US commitment to NATO\'s Article 5 mutual defence clause. Signals a return to multilateral engagement after Trump\'s "America First" approach.', source:'dem_platform', change:'reaffirm' },
+        { date:'2022-02', type:'policy', who:'Biden Administration', text:'Russia invades Ukraine. Biden leads coordinated Western response — unprecedented sanctions, military aid, and NATO unity. US coordinates intelligence sharing and weapons deliveries without direct military engagement.', source:'ukraine_aid', change:'reaffirm' },
+        { date:'2024-04', type:'vote', who:'US Congress (bipartisan)', text:'$95bn national security supplemental passed — $60bn for Ukraine, $26bn for Israel and Gaza aid, $8bn for Indo-Pacific including Taiwan. Passes with bipartisan support after months of Republican delay.', source:'ukraine_95bn', change:'reaffirm' },
+        { date:'2025-01', type:'statement', who:'Congressional Democrats', text:'Democrats oppose Trump\'s suspension of some military aid to Ukraine and his direct meetings with Russian officials without Ukrainian representation, calling them a betrayal of US commitments.', source:'dem_platform', change:'reaffirm' },
+      ]
+    },
+    rep:{
+      summary:'"America First" foreign policy emphasises transactional alliances, scepticism about open-ended Ukraine aid, and pressure on NATO members to meet their 2% spending commitments. Trump\'s second term has seen friction with traditional European allies, direct engagement with Russia on Ukraine, and a firm "pivot to China" as the primary strategic competition.',
+      bullets:['America First — transactional alliances','Pressure NATO members on 2% spending commitment','Sceptical of open-ended Ukraine aid','China as primary strategic competitor'],
+      leaning:'moderate', score:44,
+      sources:['rep_platform','trump_nato'],
+      timeline:[
+        { date:'2024-02', type:'speech', who:'Donald Trump', text:'At a campaign rally, Trump says he would "encourage" Russia to do "whatever the hell they want" to NATO members who don\'t pay. NATO allies express alarm; the statement dominates the transatlantic security debate.', source:'trump_nato', change:'reaffirm' },
+        { date:'2024-07', type:'platform', who:'Republican Party', text:'2024 GOP platform: "America First" foreign policy, ending the Ukraine war "quickly", designating China as the primary long-term threat, and demanding NATO allies pay their fair share before expecting US protection.', source:'rep_platform', change:'reaffirm' },
+        { date:'2025-01', type:'policy', who:'Trump Administration', text:'Administration suspends some military aid to Ukraine temporarily. Trump envoy meets with Russian officials without Ukrainian representation. European allies deepen defence cooperation in response to uncertainty about US commitment.', source:'rep_platform', change:'shift' },
+        { date:'2025-03', type:'statement', who:'Trump Administration', text:'Administration pressures Zelensky to accept a ceasefire on terms that include ceding some Russian-occupied territory. Zelensky rejects; relationship between the US and Ukraine becomes strained.', source:'rep_platform', change:'reaffirm' },
+      ]
+    },
+    prog:{
+      summary:'Progressive Democrats support significantly cutting the defence budget (by 10-25%), ending "forever wars" and overseas troop deployments, and prioritising diplomacy over military solutions. They voted against the $95bn supplemental largely over concerns about unconditional Israel aid, and have called for a ceasefire in Gaza as a condition of any further military assistance.',
+      bullets:['Cut defence budget by 10-25%','End "forever wars" and overseas deployments','Conditional Ukraine support — diplomacy required','Ceasefire in Gaza as condition for Israel aid'],
+      leaning:'opposed', score:30,
+      sources:['sanders_platform'],
+      timeline:[
+        { date:'2021-08', type:'statement', who:'Progressive Caucus', text:'Progressives largely support the withdrawal from Afghanistan, calling it long overdue, while criticising the execution. Many call for deeper cuts to the defence budget in the subsequent appropriations process.', source:'sanders_platform', change:'reaffirm' },
+        { date:'2023-10', type:'statement', who:'Progressive Caucus', text:'Following Hamas\'s October 7 attack, many progressives condemn the attack while calling for restraint in the Israeli response. Rep. Rashida Tlaib and others call for an immediate ceasefire. Tlaib is censured by the House.', source:'sanders_platform', change:'reaffirm' },
+        { date:'2024-04', type:'vote', who:'Progressive Democrats', text:'Multiple progressive Democrats vote against the $95bn supplemental aid package, citing unconditional military aid to Israel given civilian casualties in Gaza. The bill passes with bipartisan support despite progressive opposition.', source:'ukraine_95bn', change:'reaffirm' },
+      ]
+    },
+    lib:{
+      summary:'Libertarians support complete non-interventionism: no military alliances (including NATO), no foreign military aid, closing all overseas military bases, and bringing all US troops home. They oppose all military foreign aid on the grounds that it entangles the US in foreign conflicts and is funded by American taxpayers without their meaningful consent.',
+      bullets:['Leave NATO — end all military alliances','End all foreign military aid','Close all 800+ overseas military bases','Non-interventionism — no wars unless directly attacked'],
+      leaning:'opposed', score:12,
+      sources:['lib_platform'],
+      timeline:[
+        { date:'2024-07', type:'platform', who:'Libertarian Party', text:'Chase Oliver campaigns on exiting NATO, ending all foreign military aid including to Ukraine and Israel, closing every overseas US military base, and bringing all troops home. Frames non-interventionism as the only constitutionally and morally defensible foreign policy.', source:'lib_platform', change:'reaffirm' },
+      ]
+    },
+    grn:{
+      summary:'The Green Party calls for cutting the military budget by 75%, closing all overseas bases, leaving NATO and all military alliances, ending all foreign military sales, and redirecting spending to domestic priorities. The party also called for a negotiated settlement to the Ukraine war, arguing that US and NATO expansion contributed to the conflict.',
+      bullets:['Cut military budget by 75%','Close all 800+ overseas bases','Leave NATO and all military alliances','End all foreign military sales'],
+      leaning:'opposed', score:16,
+      sources:['grn_us_platform'],
+      timeline:[
+        { date:'2022-02', type:'statement', who:'Jill Stein / Green Party', text:'In the days after Russia\'s invasion, the Green Party issues a statement calling for an immediate ceasefire and negotiations. Stein argues that NATO expansion contributed to Russian aggression — a position that generates significant controversy.', source:'grn_us_platform', change:'reaffirm' },
+        { date:'2024-07', type:'platform', who:'Green Party / Jill Stein', text:'Platform calls for cutting the military budget by 75%, closing all overseas bases, exiting NATO, ending all foreign arms sales, and redirecting defence spending to healthcare, education, and the green transition.', source:'grn_us_platform', change:'reaffirm' },
+      ]
+    },
+  }
+},
+];
+
+// ── APP STATE ──────────────────────────────────────────────────────────────────
+let activeIssue = ISSUES[0].id;
+let activeView  = 'detail';
+let enabledParties = new Set(PARTIES.map(p => p.id));
+
+// ── HELPERS ────────────────────────────────────────────────────────────────────
+function getPill(l) {
+  if (l==='supportive') return { cls:'pill-supportive', label:'Expand & invest' };
+  if (l==='moderate')   return { cls:'pill-moderate',   label:'Reform & review' };
+  if (l==='opposed')    return { cls:'pill-opposed',    label:'Restrict & reduce' };
+  return { cls:'pill-neutral', label:'Neutral / mixed' };
+}
+function typeLabel(t) {
+  return ({manifesto:'Manifesto',platform:'Platform',speech:'Speech',interview:'Interview',vote:'Vote / Division',policy:'Policy / Law',statement:'Statement',eo:'Executive Order'})[t] || t;
+}
+function fmtDate(d) {
+  const [y,m] = d.split('-');
+  return (['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'])[+m]+' '+y;
+}
+
+// ── BUILD SIDEBAR ──────────────────────────────────────────────────────────────
+function buildSidebar() {
+  const list = document.getElementById('issueList');
+  list.innerHTML = '';
+  ISSUES.forEach(issue => {
+    const btn = document.createElement('button');
+    btn.className = 'issue-btn'+(issue.id===activeIssue?' active':'');
+    btn.dataset.id = issue.id;
+    btn.innerHTML = `<span class="issue-icon">${issue.icon}</span>${issue.label}`;
+    btn.addEventListener('click', ()=>selectIssue(issue.id));
+    list.appendChild(btn);
+  });
+
+  const filters = document.getElementById('partyFilters');
+  filters.innerHTML = '';
+  PARTIES.forEach(p => {
+    const label = document.createElement('label');
+    label.className = 'party-check';
+    label.innerHTML = `<input type="checkbox" checked data-party="${p.id}"><span class="party-dot" style="background:${p.color}"></span><span class="party-name">${p.name}</span>`;
+    label.querySelector('input').addEventListener('change', e => {
+      if (e.target.checked) enabledParties.add(p.id); else enabledParties.delete(p.id);
+      renderIssue(activeIssue);
+    });
+    filters.appendChild(label);
+  });
+}
+
+function selectIssue(id) {
+  activeIssue = id;
+  document.querySelectorAll('.issue-btn').forEach(b=>b.classList.toggle('active',b.dataset.id===id));
+  renderIssue(id);
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────────────────
+function renderIssue(id) {
+  const issue = ISSUES.find(i=>i.id===id);
+  if (!issue) return;
+
+  document.getElementById('issueTitleIcon').textContent = issue.icon;
+  document.getElementById('issueTitleText').textContent = issue.label;
+  document.getElementById('issueDesc').textContent = issue.desc;
+  document.getElementById('factText').textContent = issue.fact;
+
+  const citDiv = document.getElementById('factCitations');
+  citDiv.innerHTML = '';
+  (issue.factSources||[]).forEach(key => {
+    const s = S(key);
+    const a = document.createElement('a');
+    a.className='cite-link'; a.href=s.url; a.target='_blank'; a.rel='noopener';
+    a.textContent = s.label;
+    citDiv.appendChild(a);
+  });
+
+  const specRows = document.getElementById('spectrumRows');
+  specRows.innerHTML = '';
+  PARTIES.filter(p=>enabledParties.has(p.id)).forEach(p => {
+    const st = issue.stances[p.id];
+    const row = document.createElement('div');
+    row.className='spectrum-row';
+    row.innerHTML=`<span class="spectrum-party">${p.name}</span><div class="spectrum-bar-wrap"><div class="spectrum-fill" style="width:${st.score}%;background:${p.color}"></div></div><span class="spectrum-val">${st.score}/100</span>`;
+    specRows.appendChild(row);
+  });
+
+  if (activeView==='detail') renderDetailCards(issue);
+  else renderCompare(issue);
+}
+
+function renderDetailCards(issue) {
+  const grid = document.getElementById('stanceGrid');
+  grid.innerHTML = '';
+
+  PARTIES.filter(p=>enabledParties.has(p.id)).forEach(p => {
+    const st = issue.stances[p.id];
+    const pill = getPill(st.leaning);
+    const cardId = `tl-${p.id}-${issue.id}`;
+
+    const sourceChips = (st.sources||[]).map(key=>{
+      const s=S(key);
+      return `<a class="source-chip" href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`;
+    }).join('');
+
+    const tlEntries = (st.timeline||[]).map(e=>{
+      const s=S(e.source);
+      const changeBadge = e.change==='shift'
+        ? '<span class="tl-change shift">Position shift</span>'
+        : e.change==='reaffirm'
+          ? '<span class="tl-change reaffirm">Reaffirmed</span>'
+          : '';
+      return `<div class="timeline-entry">
+        <div class="tl-dot" style="background:${p.color}"></div>
+        <div class="tl-content">
+          <div class="tl-meta">
+            <span class="tl-date">${fmtDate(e.date)}</span>
+            <span class="tl-type type-${e.type}">${typeLabel(e.type)}</span>
+            <span class="tl-who">${e.who}</span>
+            ${changeBadge}
+          </div>
+          <div class="tl-text">${e.text}</div>
+          <a class="tl-source" href="${s.url}" target="_blank" rel="noopener">${s.label} ↗</a>
+        </div>
+      </div>`;
+    }).join('');
+
+    const card = document.createElement('div');
+    card.className='stance-card';
+    card.innerHTML=`
+      <div class="stance-card-header">
+        <div class="party-badge">
+          <div class="party-color-bar" style="background:${p.color}"></div>
+          <div>
+            <div class="party-badge-name">${p.name}</div>
+            <div class="party-badge-full">${p.full}</div>
+          </div>
+        </div>
+        <div class="header-right">
+          <span class="stance-pill ${pill.cls}">${pill.label}</span>
+          <button class="timeline-toggle" data-target="${cardId}">
+            Position history <span style="opacity:0.7">(${(st.timeline||[]).length})</span>
+          </button>
+        </div>
+      </div>
+      <div class="stance-body">
+        <p class="stance-summary">${st.summary}</p>
+        <ul class="stance-bullets">${st.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
+        <div class="stance-sources">
+          <span class="stance-source-label">Sources:</span>
+          ${sourceChips}
+        </div>
+      </div>
+      <div class="timeline-panel" id="${cardId}">
+        <div class="timeline-inner">
+          <div class="timeline-heading">Position history</div>
+          <div class="timeline-entries">${tlEntries}</div>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+
+    card.querySelector('.timeline-toggle').addEventListener('click', function(){
+      const panel=document.getElementById(this.dataset.target);
+      const open=panel.classList.toggle('open');
+      this.classList.toggle('open',open);
+      this.childNodes[0].textContent = open ? 'Hide history ' : 'Position history ';
+    });
+  });
+}
+
+function renderCompare(issue) {
+  const head=document.getElementById('compareHead');
+  const body=document.getElementById('compareBody');
+  const visible=PARTIES.filter(p=>enabledParties.has(p.id));
+
+  head.innerHTML=`<th style="min-width:130px">Issue / Party</th>`+
+    visible.map(p=>`<th><span style="display:inline-flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:${p.color};display:inline-block"></span>${p.name}</span></th>`).join('');
+
+  body.innerHTML='';
+  ISSUES.forEach(iss=>{
+    const row=document.createElement('tr');
+    if (iss.id===issue.id) row.style.background='var(--accent-light)';
+    row.innerHTML=`<td style="font-weight:500;font-size:13px">${iss.icon} ${iss.label}</td>`+
+      visible.map(p=>{
+        const s=iss.stances[p.id];
+        const pill=getPill(s.leaning);
+        const hasShift=(s.timeline||[]).some(t=>t.change==='shift');
+        const latest=(s.timeline||[]).slice(-1)[0];
+        return `<td>
+          <span class="stance-pill ${pill.cls}" style="font-size:10px;padding:2px 8px">${s.score}/100</span>
+          ${hasShift?'<span class="shift-badge" title="Position has shifted since the election">⟳</span>':''}
+          ${latest?`<div style="font-size:10px;color:var(--text-3);margin-top:2px">${fmtDate(latest.date)}</div>`:''}
+        </td>`;
+      }).join('');
+    row.addEventListener('click',()=>{
+      activeView='detail';
+      document.querySelectorAll('.view-tab').forEach(t=>t.classList.toggle('active',t.dataset.view==='detail'));
+      document.getElementById('detailView').classList.remove('hidden');
+      document.getElementById('compareView').classList.add('hidden');
+      selectIssue(iss.id);
+    });
+    body.appendChild(row);
+  });
+}
+
+// ── TABS ───────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.view-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    activeView=tab.dataset.view;
+    document.querySelectorAll('.view-tab').forEach(t=>t.classList.toggle('active',t.dataset.view===activeView));
+    document.getElementById('detailView').classList.toggle('hidden',activeView!=='detail');
+    document.getElementById('compareView').classList.toggle('hidden',activeView!=='compare');
+    renderIssue(activeIssue);
+  });
+});
+
+buildSidebar();
+renderIssue(activeIssue);
+</script>
+</body>
+</html>

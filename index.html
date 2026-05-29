@@ -1,128 +1,795 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sam Borni</title>
-  <meta name="description" content="Sam Borni — writer and senior solutions consultant. Writing on international politics, diplomacy, and the forces shaping the world." />
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    .hero { margin-bottom: var(--gap); }
-    .hero-kicker { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.25rem; }
-    .hero-dots { display: flex; gap: 4px; }
-    .hero-dots span { display: block; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
-    .hero-dots span:nth-child(2), .hero-dots span:nth-child(3) { background: var(--rule); }
-    .hero-location { font-size: 12px; letter-spacing: 0.12em; color: var(--ink-faint); text-transform: uppercase; }
-    .hero-name { font-family: var(--serif); font-size: clamp(42px, 7vw, 64px); font-weight: 400; line-height: 1.08; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 1.5rem; }
-    .hero-name em { font-style: italic; color: var(--ink-mid); }
-    .hero-tagline { font-size: 16px; color: var(--ink-mid); line-height: 1.7; max-width: 500px; margin-bottom: 2rem; }
-    .hero-cta { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-
-    .writing-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.5rem; }
-    .writing-header a { font-size: 12px; color: var(--ink-mid); border-bottom: 0.5px solid var(--rule); padding-bottom: 1px; transition: color 0.15s, border-color 0.15s; }
-    .writing-header a:hover { color: var(--ink); border-color: var(--ink); }
-
-    .articles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); border: 0.5px solid var(--rule); border-radius: 2px; overflow: hidden; }
-    .article-card { background: var(--bg); padding: 1.75rem; transition: background 0.15s; text-decoration: none; display: block; }
-    .article-card:hover { background: var(--bg-lift); }
-    .article-meta { font-size: 11px; letter-spacing: 0.08em; color: var(--ink-faint); margin-bottom: 0.75rem; }
-    .article-title { font-family: var(--serif); font-size: 19px; font-weight: 400; line-height: 1.25; color: var(--ink); margin-bottom: 0.5rem; }
-    .article-sub { font-size: 13px; color: var(--ink-mid); line-height: 1.55; margin-bottom: 1.25rem; }
-    .article-link { font-size: 12px; color: var(--ink-mid); border-bottom: 0.5px solid var(--rule); padding-bottom: 1px; }
-
-    .about-strip { display: flex; gap: 2.5rem; align-items: flex-start; padding: 2rem 0; }
-    .about-avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--bg-lift); border: 0.5px solid var(--rule); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 17px; color: var(--ink); flex-shrink: 0; }
-    .about-text p { font-size: 14px; color: var(--ink-mid); line-height: 1.7; max-width: 560px; margin-bottom: 1rem; }
-    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-    .tag { font-size: 11px; padding: 4px 11px; border-radius: 99px; border: 0.5px solid var(--rule); color: var(--ink-mid); }
-
-    @media (max-width: 600px) { .articles-grid { grid-template-columns: 1fr; } .about-strip { flex-direction: column; gap: 1.25rem; } }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PolicyLens — Malta Party Comparison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="site-wrap">
-    <nav class="site-nav">
-      <span class="nav-logo">S · A · B</span>
-      <ul class="nav-links">
-        <li><a href="index.html" class="active">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="cv.html">CV</a></li>
-      </ul>
-    </nav>
 
-    <section class="hero">
-      <div class="hero-kicker">
-        <div class="hero-dots"><span></span><span></span><span></span></div>
-        <span class="hero-location">Sam Borni — London</span>
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-mark">Policy<span>Lens</span></span>
+      <div class="country-selector">
+        <select class="country-select" onchange="window.location.href=this.value">
+          <option value="policy-lens-uk.html">🇬🇧 United Kingdom</option>
+          <option value="policy-lens-us.html">🇺🇸 United States</option>
+          <option value="policy-lens-mt.html" selected>🇲🇹 Malta</option>
+        </select>
       </div>
-      <h1 class="hero-name">Writer,<br>consultant<br><em>&amp; analyst.</em></h1>
-      <p class="hero-tagline">Writing on international politics, diplomacy, and the forces shaping the world — from Southeast Asia to post-Brexit Britain.</p>
-      <div class="hero-cta">
-        <a class="btn btn-primary" href="writing.html">Read my writing</a>
-        <a class="btn btn-secondary" href="cv.html">View CV</a>
+    </div>
+    <div class="nav-pills">
+      <button class="nav-pill active">Issues</button>
+      <button class="nav-pill">About</button>
+      <button class="nav-pill">Sources</button>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div style="margin-bottom:1rem;"><span class="election-badge">30 May 2026 General Election · Every Claim Source-Linked</span></div>
+    <h1>Where do the parties really stand?</h1>
+    <p>Compare Malta's political parties on the issues that matter most ahead of the 30 May 2026 general election. Every statistic and policy claim is linked to its primary source. Position timelines track how stances have evolved since the 2022 election.</p>
+    <div class="hero-meta">
+      <span class="hero-meta-item">Every claim source-linked</span>
+      <span class="hero-meta-item">5 parties tracked</span>
+      <span class="hero-meta-item">7 policy areas</span>
+      <span class="hero-meta-item">Live position timelines</span>
+    </div>
+  </div>
+</div>
+
+<main>
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Policy Areas</div>
+      <div class="issue-list" id="issueList"></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Show Parties</div>
+      <div class="party-filters" id="partyFilters"></div>
+    </div>
+    <div class="sidebar-section" style="border-top:1px solid var(--border);padding-top:1rem;">
+      <div style="font-size:12px;color:var(--text-3);line-height:1.8;">
+        All claims linked to primary sources — official manifestos, EU institutions, Times of Malta, Malta Independent, MaltaToday, Shift News, Newsbook, and official government data.<br><br>
+        <span style="display:inline-flex;align-items:center;gap:5px;"><span style="background:#FEF5E7;color:#9A5F00;font-size:10px;font-weight:600;padding:1px 5px;border-radius:3px;">⟳ Position shift</span> shown where stance has changed since 2022.</span><br><br>
+        <span style="font-size:11px;color:var(--text-3);">Note: Aħwa Maltin is a new party without a full published manifesto. Their stances are sourced from campaign statements and published interviews.</span>
       </div>
-    </section>
+    </div>
+  </aside>
 
-    <hr class="rule" />
+  <div class="content">
+    <div class="view-tabs">
+      <button class="view-tab active" data-view="detail">Detailed View</button>
+      <button class="view-tab" data-view="compare">Quick Compare</button>
+    </div>
 
-    <section id="writing">
-      <div class="writing-header">
-        <span class="eyebrow">Recent writing</span>
-        <a href="writing.html">All articles →</a>
+    <div id="detailView">
+      <div class="issue-header">
+        <div class="issue-title-row">
+          <div class="issue-title-icon" id="issueTitleIcon"></div>
+          <div class="issue-title" id="issueTitleText"></div>
+        </div>
+        <div class="issue-description" id="issueDesc"></div>
       </div>
-      <div class="articles-grid">
-        <a class="article-card" href="will-slovakia-follow-viktor-orban.html">
-          <p class="article-meta">March 2024 &nbsp;·&nbsp; Follow Democracy</p>
-          <h2 class="article-title">Will Slovakia follow Viktor Orbán east?</h2>
-          <p class="article-sub">A Slovakian presidential election that could cause headaches for the EU — and a new belligerent ally for Viktor Orbán inside the bloc.</p>
-          <span class="article-link">Read →</span>
-        </a>
-        <a class="article-card" href="the-importance-of-quotation-marks.html">
-          <p class="article-meta">March 2024 &nbsp;·&nbsp; Follow Democracy</p>
-          <h2 class="article-title">The importance of quotation marks in Russian 'democracy'</h2>
-          <p class="article-sub">Putin cements himself in power for six more years in a futile exercise that is constitutional norm followed for theatre's sake.</p>
-          <span class="article-link">Read →</span>
-        </a>
-        <a class="article-card" href="the_issue_with_labour_cost_of_living_plan.html">
-          <p class="article-meta">July 2022 &nbsp;·&nbsp; Essay</p>
-          <h2 class="article-title">The U.K. Cost-of-living Crisis</h2>
-          <p class="article-sub">How Labour's messaging misses the mark on economic anxiety.</p>
-          <span class="article-link">Read →</span>
-        </a>
-        <a class="article-card" href="singapore_patient_yet_present.html">
-          <p class="article-meta">May 2022 &nbsp;·&nbsp; Essay</p>
-          <h2 class="article-title">Singapore: Patient, yet Present</h2>
-          <p class="article-sub">Why Lawrence Wong must strike the right balance for a new era.</p>
-          <span class="article-link">Read →</span>
-        </a>
+
+      <div class="fact-strip">
+        <div class="fact-strip-body">
+          <span class="fact-icon">ℹ</span>
+          <div class="fact-text" id="factText"></div>
+        </div>
+        <div class="fact-citations" id="factCitations"></div>
       </div>
-    </section>
 
-    <hr class="rule" />
+      <div class="agreement-section">
+        <div class="agreement-label">Policy Ambition Spectrum</div>
+        <div id="spectrumRows"></div>
+        <div class="spectrum-axis"><span>Less interventionist</span><span>More interventionist</span></div>
+      </div>
 
-    <section>
-      <span class="eyebrow" style="display:block; margin-bottom:1.5rem;">About</span>
-      <div class="about-strip">
-        <div class="about-avatar">SB</div>
-        <div class="about-text">
-          <p>Senior solutions consultant and writer. A decade of experience across data strategy, master data management, and enterprise pre-sales — combined with dual master's degrees in international relations from King's College London and Renmin University of China.</p>
-          <div class="tags">
-            <span class="tag">International Relations</span>
-            <span class="tag">British Politics</span>
-            <span class="tag">Indo-Pacific Affairs</span>
-            <span class="tag">Anglo-Japanese Relations</span>
-            <span class="tag">Global Democracy</span>
+      <div class="stance-grid" id="stanceGrid"></div>
+    </div>
+
+    <div id="compareView" class="hidden">
+      <div class="compare-table-wrap">
+        <table class="compare-table">
+          <thead><tr id="compareHead"></tr></thead>
+          <tbody id="compareBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <strong>PolicyLens</strong> · Nonpartisan civic information platform<br>
+  All claims linked to primary sources. Positions reflect publicly stated policies, manifestos, and verified news reports.<br>
+  <span style="font-size:10px;opacity:0.5;">Not affiliated with any political party, campaign, or government body. Last updated May 2026.</span>
+</footer>
+
+<script>
+const PARTIES = [
+  { id:'pl',   name:'Labour (PL)',  full:'Partit Laburista',                  color:'#CC0022', light:'#FDE8EC' },
+  { id:'pn',   name:'Nationalist (PN)', full:'Partit Nazzjonalista',          color:'#003399', light:'#E6ECF7' },
+  { id:'adpd', name:'ADPD',         full:'Alternattiva Demokratika – Partiti Demokratiku', color:'#008845', light:'#E6F7EE' },
+  { id:'mom',  name:'Momentum',     full:'Momentum',                          color:'#C87000', light:'#FAF0E0' },
+  { id:'ahwa', name:'Aħwa Maltin',  full:'Aħwa Maltin',                       color:'#7B3200', light:'#F5EBE5' },
+];
+
+// ── SOURCE REGISTRY ────────────────────────────────────────────────────────────
+const SOURCES = {
+  // Party platforms / manifestos
+  pl_manifesto:         { label:'PL "Int Malta" Manifesto 2026',                         url:'https://tvmnews.mt/en/news/prime-minister-robert-abela-a-labour-government-will-continue-moving-forward-towards-new-prosperity/' },
+  pn_manifesto:         { label:'PN "New Direction" Manifesto 2026',                     url:'https://www.independent.com.mt/articles/2026-05-18/local-news/Alex-Borg-launches-PN-s-electoral-manifesto-as-he-promises-new-direction-for-Malta-6736289826' },
+  pn_manifesto_mt:      { label:'MaltaToday – PN Manifesto Approved',                    url:'https://www.maltatoday.com.mt/news/election-2026/141891/pn_approves_its_electoral_manifesto' },
+  adpd_manifesto:       { label:'ADPD "Ilkoll" Manifesto 2026',                          url:'https://www.independent.com.mt/articles/2026-05-09/local-news/ADPD-approves-manifesto-with-focus-on-solidarity-and-governance-6736289574' },
+  adpd_manifesto_nb:    { label:'Newsbook – ADPD Manifesto Published',                   url:'https://newsbook.com.mt/en/adpd-publishes-electoral-manifesto-approves-election-candidates/' },
+  momentum_manifesto:   { label:'Momentum Manifesto – "For a Just and Beautiful Malta"', url:'https://www.independent.com.mt/articles/2026-05-14/local-news/Momentum-launches-comprehensive-manifesto-for-the-2026-General-Election-6736289703' },
+  ahwa_campaign:        { label:'MaltaToday – Aħwa Maltin Campaign Launch',              url:'https://www.maltatoday.com.mt/news/election-2026/141360/awa_maltin_announce_election_campaign_under_slogan_malta_gallmaltin' },
+  // Economy & cost of living
+  kpmg_budget26:        { label:'KPMG – Malta Budget 2026 Summary',                      url:'https://kpmg.com/mt/en/insights/2025/11/malta-budget-2026.html' },
+  ec_forecast_mt:       { label:'European Commission – Malta Economic Forecast',         url:'https://economy-finance.ec.europa.eu/economic-surveillance-eu-economies/malta/economic-forecast-malta_en' },
+  abela_economy:        { label:'MaltaToday – Abela: "An Ever-Growing Economy"',         url:'https://www.maltatoday.com.mt/news/national/139753/an_evergrowing_economy_is_the_foundation_of_everything_abela_says' },
+  budget_narrative:     { label:'Malta Independent – Abela Budget 2026 Narrative',       url:'https://www.independent.com.mt/articles/2025-11-09/local-news/Economic-stability-continuity-Abela-s-budget-speech-anchors-Labour-s-narrative-6736284654' },
+  cola_data:            { label:'YesItMatters – Malta COLA Data 2024–2025',              url:'https://yesitmatters.com/resources/employment/cola/' },
+  cost_of_living:       { label:'HubPy – Cost of Living Malta 2024–25',                  url:'https://hubpymalta.com/cost-of-living-in-malta-in-2024-25-rising-pressures-and-government-support/' },
+  borg_econ:            { label:'Malta Independent – Borg Promises Economic Reset',      url:'https://www.independent.com.mt/articles/2026-04-28/local-news/Alex-Borg-promises-economic-reset-trust-in-governance-and-a-better-quality-of-life-6736289202' },
+  // Housing
+  cbm_housing:          { label:'Central Bank of Malta – Housing Affordability Analysis Dec 2025', url:'https://www.centralbankmalta.org/site/PR/2025/TMBW-DG-Article-Dec-25.pdf?revcount=6901' },
+  newsbook_property:    { label:'Newsbook – Property Prices Surge 2024',                 url:'https://newsbook.com.mt/en/property-prices-in-malta-continue-to-surge-reaching-new-heights-in-2024/' },
+  newsbook_housing:     { label:'Newsbook – Malta Housing Costs Soar as Living Space Shrinks', url:'https://newsbook.com.mt/en/malta-housing-costs-soar-as-living-space-shrinks/' },
+  pn_housing:           { label:'Malta Independent – PN Housing Proposal',               url:'https://www.independent.com.mt/articles/2026-05-14/local-news/Alex-Borg-denies-PN-housing-proposal-copies-Equity-Sharing-Scheme-as-suggested-by-former-minister-6736289715' },
+  pn_property_concern:  { label:'Malta Independent – PN on Rising Property Prices',      url:'https://www.independent.com.mt/articles/2025-04-11/local-news/Sharp-increase-in-property-prices-is-concerning-and-affecting-everyone-PN-says-6736269286' },
+  // Environment & planning
+  shift_protest:        { label:'Shift News – National Protest vs Planning Reform Oct 2025', url:'https://theshiftnews.com/2025/10/03/national-protest-to-confront-planning-reforms/' },
+  adpd_emissions:       { label:'MaltaToday – ADPD: Malta Decades Behind on Emissions',  url:'https://www.maltatoday.com.mt/news/national/138194/adpd_says_malta_decades_behind_on_emissions_renews_call_for_green_transition' },
+  adpd_green_vision:    { label:'Malta Independent – ADPD Green Vision 2050',            url:'https://www.independent.com.mt/articles/2025-09-11/local-news/ADPD-presents-Green-Vision-2050-An-alternative-future-6736273038' },
+  ngo_planning:         { label:'Malta Independent – NGOs Urge Objection to Planning Reform', url:'https://www.independent.com.mt/articles/2025-08-27/local-news/NGOs-urge-public-to-object-to-destructive-planning-reform-and-sham-consultation-6736272651' },
+  moviment_graffitti:   { label:'Moviment Graffitti – Planning Reform Statement Sep 2025', url:'https://movimentgraffitti.org/2025/09/30/organisations-highlight-disastrous-consequences-of-governments-planning-reform-ahead-of-saturdays-national-protest/' },
+  adpd_fossil:          { label:'MaltaToday – ADPD Fossil Fuel Dependency Warning',      url:'https://www.maltatoday.com.mt/news/national/140334/green_party_warns_fossil_fuel_dependency_leaves_malta_exposed_to_debt_and_price_shocks' },
+  // Immigration & population
+  mt_no_pressure:       { label:'Malta Independent – Malta No Longer Under Pressure from Irregular Migration', url:'https://www.independent.com.mt/articles/2025-11-15/local-news/Malta-no-longer-classified-as-under-pressure-from-irregular-migration-government-says-6736284825' },
+  identita_labour_mig:  { label:'Identità – New Labour Migration Policy Aug 2025',       url:'https://identita.gov.mt/new-labour-migration-rules-take-effect-from-1-august-2025/' },
+  pn_labour_mig:        { label:'MaltaToday – PN on Labour Migration: "Panicked Reaction"', url:'https://www.maltatoday.com.mt/news/national/139848/governments_current_labour_migration_approach_a_panicked_directionless_reaction_pn_says' },
+  amphora_migration:    { label:'Amphora Media – 2026 Election Guidebook: Population and Migration', url:'https://www.amphora.media/2026/05/2026-election-guidebook-population-and-migration' },
+  pl_immigration:       { label:'Malta Independent – PL Says PN Politicising Immigration', url:'https://www.independent.com.mt/articles/2025-03-26/local-news/PL-says-PN-politicising-irregular-immigration-issue-6736268875' },
+  // Rule of law & governance
+  eu_rol_2025:          { label:'EU – 2025 Rule of Law Report: Malta',                   url:'https://commission.europa.eu/document/download/82ce49b6-12b2-4440-bae9-18a3a929007c_en?filename=2025+Rule+of+Law+Report+-+Country+Chapter+Malta.pdf' },
+  cpi_2025:             { label:'Malta Independent – Malta CPI Score 49/100 (2025)',     url:'https://www.independent.com.mt/articles/2026-02-10/local-news/Malta-receives-score-of-49-in-2025-Corruption-Perceptions-Index-6736287101' },
+  repubblika_apr26:     { label:'Malta Independent – Repubblika Warns on Rule of Law Apr 2026', url:'https://www.independent.com.mt/articles/2026-04-24/local-news/Repubblika-warns-recent-legal-changes-risk-undermining-accountability-and-the-rule-of-law-6736289103' },
+  // Healthcare
+  healthcare_budget25:  { label:'Lovin Malta – €14m to Reduce Healthcare Waiting Times (Budget 2025)', url:'https://lovinmalta.com/lifestyle/health/budget-2025-e14-million-will-be-invested-to-decrease-waiting-times-in-health-sector/' },
+  mosta_pilot:          { label:'Newsbook – 24/7 Triage Pilot to Reduce Waiting Times',  url:'https://newsbook.com.mt/en/pilot-project-aims-to-mitigate-long-waiting-times-at-mosta-health-centre/' },
+  pl_endometriosis:     { label:'MaltaToday – Abela Pledges Free Endometriosis Medication', url:'https://www.maltatoday.com.mt/news/election-2026/141768/robert_abela_pledges_free_endometriosis_medication_womens_health_clinic' },
+  pn_healthcare_pledge: { label:'MaltaToday – PN on Healthcare Overhaul',                url:'https://www.maltatoday.com.mt/news/election-2026/141419/nationalist_supporters_gather_in_lija_ahead_of_partys_1_may_mass_meeting_' },
+  // Energy & utilities
+  electricity_price:    { label:'GlobalPetrolPrices – Malta Electricity Prices',         url:'https://www.globalpetrolprices.com/Malta/electricity_prices/' },
+  fuel_subsidies:       { label:'MaltaToday – Malta Fuel Subsidies: Feasibility Review', url:'https://www.maltatoday.com.mt/news/national/125888/fuel_subsidies_till_2026__is_this_feasible' },
+};
+
+function S(key) { return SOURCES[key] || { label: key, url: '#' }; }
+
+// ── DATA ───────────────────────────────────────────────────────────────────────
+const ISSUES = [
+{
+  id:'economy', icon:'📈', label:'Economy & Cost of Living',
+  desc:'Malta\'s economic growth record, the purchasing power of families, COLA adjustments, tax policy, and whether growth has translated into improved living standards for ordinary households.',
+  fact:'Malta\'s GDP grew 6% in 2024 and is forecast at 4% for 2025 — one of the highest rates in the EU. Yet cost of living ranked as the #1 voter concern in pre-election surveys. The 2025 COLA (cost of living adjustment) was just €5.24 per week, down from €12.81 in 2024, reflecting moderating inflation but persistent pressure on household budgets.',
+  factSources:['ec_forecast_mt','cola_data'],
+  stances:{
+    pl:{
+      summary:'Labour presents the economy as its most powerful asset. Budget 2026 included over €140 million in cumulative tax cuts across the 2024–2026 cycle: families with two children earning up to €60,000 pay no income tax over 25 years; a €1,000 annual super bonus for all workers; 10% tax rate extended to part-time income; and 15% for the first €30,000 earned by young workers in their first three years. Abela frames all policies through the lens of economic stability and family protection.',
+      bullets:['No income tax for families earning up to €60k (25-year benefit)','€1,000 annual super bonus for all workers, tax-free','10% rate on first €15,000 of part-time income (up from €10,000)','15% tax for young workers on first €30,000 over their first 3 years'],
+      leaning:'supportive', score:72,
+      sources:['pl_manifesto','kpmg_budget26','budget_narrative'],
+      timeline:[
+        { date:'2024-11', type:'policy',    who:'Robert Abela (Prime Minister)', text:'Budget 2025 announced. Labour frames economic continuity: GDP growth sustained, family tax relief extended, cost of living assistance maintained. Abela claims "an ever-growing economy is the foundation of everything."', source:'abela_economy', change:'reaffirm' },
+        { date:'2025-11', type:'policy',    who:'Robert Abela (Prime Minister)', text:'Budget 2026 passed — Abela describes it as "the best in Malta\'s history." Key measures: €1,000 annual worker bonus, extended no-tax zones for young workers and families, student stipend increase of 15%, and Gozitan student allowance raised to €280/month.', source:'kpmg_budget26', change:'reaffirm' },
+        { date:'2026-05', type:'platform',  who:'Partit Laburista', text:'PL launches "Int Malta" manifesto, promising continued economic stability, investment in quality infrastructure, and further family financial support as the centrepiece of its third successive election campaign.', source:'pl_manifesto', change:'reaffirm' },
+      ]
+    },
+    pn:{
+      summary:'The Nationalists acknowledge Malta\'s economic growth but argue it has not delivered improved quality of life for ordinary families. PN\'s economic reset includes removing income tax from COLA payments, a 15% flat tax rate for returning Maltese graduates, removal of succession and donation taxes, reduced corporation tax to 15% for companies reinvesting in Malta, and significantly higher pension increases. Borg frames the debate as growth vs. wellbeing.',
+      bullets:['Remove income tax from COLA payments','15% flat tax for returning Maltese graduates','Reduce corporation tax to 15% for reinvesting businesses','Remove succession and donation taxes'],
+      leaning:'moderate', score:48,
+      sources:['pn_manifesto','borg_econ'],
+      timeline:[
+        { date:'2025-06', type:'statement', who:'Bernard Grech (PN Leader)', text:'Grech resigns as PN leader, citing the need for renewal. His final public statements frame the economy as a driver of inequality: "Growth numbers do not tell the full story of people\'s lives."', source:'pn_manifesto', change:'reaffirm' },
+        { date:'2025-09', type:'statement', who:'Alex Borg (PN Leader)', text:'Borg wins PN leadership contest by 44 votes over Adrian Delia. Sets out a platform of "economic reset" — growth must translate into quality of life, not just GDP headlines.', source:'borg_econ', change:'shift' },
+        { date:'2026-04', type:'speech',    who:'Alex Borg (PN Leader)', text:'Borg promises economic reset, trust in governance, and better quality of life at major PN rally. Frames election as a choice between "numbers on a chart" and "real lives getting better."', source:'borg_econ', change:'reaffirm' },
+        { date:'2026-05', type:'platform',  who:'Partit Nazzjonalista', text:'"New Direction" manifesto launched. Economic chapter includes removing COLA tax, flat tax for returning graduates, lower corporation tax for reinvesting firms, and removal of death and donation taxes.', source:'pn_manifesto', change:'reaffirm' },
+      ]
+    },
+    adpd:{
+      summary:'ADPD\'s "Ilkoll" manifesto argues for an economy based on wellbeing, justice, and sustainability rather than unrestrained GDP growth. The party calls for closing the gap between the minimum wage and a genuine living wage, progressive taxation, and redirecting subsidies from fossil fuels toward social investment. ADPD has an electoral agreement with Momentum for the 2026 election.',
+      bullets:['Wellbeing economy — not GDP growth alone','Close the gap between minimum wage and living wage','Progressive taxation; redirect fossil fuel subsidies','Social investment as core budget priority'],
+      leaning:'supportive', score:68,
+      sources:['adpd_manifesto'],
+      timeline:[
+        { date:'2026-05', type:'platform',  who:'ADPD / Sandra Gauci', text:'"Ilkoll" manifesto approved and published. ADPD fields candidates in all 13 districts in an electoral agreement with Momentum. The economic chapter centres on a wellbeing economy model, living wage reform, and social justice investment.', source:'adpd_manifesto', change:'reaffirm' },
+      ]
+    },
+    mom:{
+      summary:'Momentum, launched in January 2025, presents a centrist economic platform developed through eight "Vision Circles" and consultation with eleven civil society organisations. Proposals include a 15% flat tax for returning Maltese graduates, a new tax on vacant property speculation (exempting primary residences and family summer homes), gradual corporate tax reduction for Maltese businesses, and a "just and innovative economy" framework.',
+      bullets:['15% flat tax for returning Maltese graduates','New tax on vacant property speculation','Gradual corporate tax reduction for Maltese-owned businesses','259 specific economic measures developed via civil society consultation'],
+      leaning:'moderate', score:56,
+      sources:['momentum_manifesto'],
+      timeline:[
+        { date:'2025-01', type:'statement', who:'Arnold Cassola (Momentum Founder)', text:'Momentum officially launched. Cassola frames the party as a centrist alternative defending the citizen against both Labour excess and Nationalist inertia: "Momentum is there to defend the citizen."', source:'momentum_manifesto', change:'reaffirm' },
+        { date:'2026-05', type:'platform',  who:'Momentum', text:'Manifesto "For a Just and Beautiful Malta" launched with 259 specific measures. Economic chapter covers tax reform for returning graduates, property speculation tax, and gradual corporate tax reductions for reinvesting Maltese businesses.', source:'momentum_manifesto', change:'reaffirm' },
+      ]
+    },
+    ahwa:{
+      summary:'Aħwa Maltin campaigns on an anti-establishment, populist economic platform focused on purchasing power, support for small businesses, and reducing the cost burden on ordinary Maltese families. The party prioritises protecting the Maltese worker from wage depression linked to mass labour importation, though detailed costed economic proposals have not been published in a formal manifesto.',
+      bullets:['Protect Maltese workers from wage depression','Support for small and micro businesses','Reduce cost burdens on ordinary families','Anti-establishment economic framing'],
+      leaning:'opposed', score:32,
+      sources:['ahwa_campaign'],
+      timeline:[
+        { date:'2026-04', type:'statement', who:'Aħwa Maltin', text:'Campaign launched under the slogan "Malta Għall-Maltin" (Malta for the Maltese). Economic messaging centres on the squeeze on ordinary Maltese families and the argument that growth has primarily benefited foreign residents and large businesses rather than local workers.', source:'ahwa_campaign', change:'reaffirm' },
+      ]
+    },
+  }
+},
+{
+  id:'housing', icon:'🏠', label:'Housing & Property',
+  desc:'Property affordability, rent levels, social housing, planning for residential development, and policies to help first-time buyers in one of Europe\'s most densely populated countries.',
+  fact:'Median apartment prices in Malta reached €317,000 in 2024 — a 79.5% increase since 2013. The Central Bank of Malta estimates a price-to-income ratio of 14.5 projected for 2025. A young couple earning minimum wage can now afford just 2.2% of properties on the market, down from 5.7% a year earlier. Planning permits for new dwellings collapsed from 12,885 in 2018 to just 1,749 in 2024.',
+  factSources:['cbm_housing','newsbook_property','newsbook_housing'],
+  stances:{
+    pl:{
+      summary:'Labour points to its Affordable Housing Project (benefiting 260 families), the Equity Sharing Scheme for first-time buyers, and commitments to convert Manoel Island and White Rocks into public national parks rather than sell them to developers. Critics argue these measures are insufficient relative to the scale of the housing crisis and that Labour\'s tenure has coincided with the steepest property price rises in Malta\'s history.',
+      bullets:['Affordable Housing Project — 260 families to benefit','Equity Sharing Scheme for first-time buyers','Manoel Island and White Rocks committed to public ownership (2025)','Anti-speculation measures in Budget 2026'],
+      leaning:'moderate', score:52,
+      sources:['pl_manifesto','kpmg_budget26'],
+      timeline:[
+        { date:'2025-06', type:'policy',    who:'Robert Abela (Prime Minister)', text:'Government announces Manoel Island will be retained in public ownership as a national park, reversing longstanding plans for private development. Environmentalists and housing campaigners broadly welcome the decision.', source:'pl_manifesto', change:'shift' },
+        { date:'2025-11', type:'policy',    who:'Robert Abela (Prime Minister)', text:'White Rocks site also committed to public ownership in November announcement, extending the national parks pledge. Budget 2026 includes additional anti-speculation measures and affordable housing programme funding.', source:'kpmg_budget26', change:'reaffirm' },
+        { date:'2026-05', type:'platform',  who:'Partit Laburista', text:'"Int Malta" manifesto reaffirms housing as a priority with the Affordable Housing Project and Equity Sharing Scheme as flagship policies. PL argues PN\'s mortgage refund proposal was copied from Labour\'s existing scheme.', source:'pl_manifesto', change:'reaffirm' },
+      ]
+    },
+    pn:{
+      summary:'The Nationalists have placed housing at the centre of their manifesto, proposing a 50% refund on mortgage interest for first-time buyers for 10 years — up to a maximum of €390 per month. Borg has consistently raised property prices as a critical quality-of-life failure, calling sharp price increases "concerning and affecting everyone." PN also pledges stricter planning controls to protect communities from over-development.',
+      bullets:['50% mortgage interest refund for first-time buyers — up to €390/month for 10 years','Strict planning controls to protect community character','Described Labour\'s housing record as a "quality of life failure"','Expanded social housing commitment'],
+      leaning:'supportive', score:68,
+      sources:['pn_manifesto','pn_property_concern','pn_housing'],
+      timeline:[
+        { date:'2025-04', type:'statement', who:'Partit Nazzjonalista', text:'PN formally states: "A sharp increase in property prices is concerning and affecting everyone." Party begins positioning housing as its primary quality-of-life attack on the Labour government.', source:'pn_property_concern', change:'reaffirm' },
+        { date:'2026-05', type:'platform',  who:'Alex Borg (PN Leader)', text:'PN manifesto launched. Flagship housing proposal: 50% refund on mortgage interest for first-time buyers for 10 years, maximum €390/month. Borg denies copying Labour\'s Equity Sharing Scheme, arguing PN\'s proposal is broader and more impactful.', source:'pn_housing', change:'reaffirm' },
+      ]
+    },
+    adpd:{
+      summary:'ADPD calls for strict planning enforcement to prevent further ODZ encroachment and protect community character from over-development. The party supports strong anti-speculation measures, transparent planning processes, and prioritising social and affordable housing over luxury development. Their position links housing directly to the environment and planning chapters of their manifesto.',
+      bullets:['Strict ODZ protection — no further encroachment','Anti-speculation planning controls','Prioritise social and affordable housing over luxury development','Transparent planning — oppose ministerial override powers'],
+      leaning:'supportive', score:82,
+      sources:['adpd_manifesto'],
+      timeline:[
+        { date:'2025-08', type:'statement', who:'ADPD', text:'ADPD joins NGOs urging public objection to planning reform Bills 143 and 144, warning that weakening ODZ protection will drive further development pressure and make housing outcomes worse, not better.', source:'ngo_planning', change:'reaffirm' },
+        { date:'2026-05', type:'platform',  who:'ADPD / Sandra Gauci', text:'"Ilkoll" manifesto links housing, planning, and environment — arguing that unrestrained development has driven up prices while destroying the quality of life that makes Malta worth living in.', source:'adpd_manifesto', change:'reaffirm' },
+      ]
+    },
+    mom:{
+      summary:'Momentum\'s manifesto proposes a new tax on vacant property speculation, explicitly exempting primary residences and family summer homes. This is positioned as a tool to bring empty properties back into use, reduce speculative holding, and ease pressure on housing supply without accelerating new construction on greenfield or ODZ land.',
+      bullets:['New tax on vacant property speculation','Primary residences and family summer homes fully exempt','Property reform targeting investor-held vacancies','Link housing reform to planning transparency measures'],
+      leaning:'supportive', score:76,
+      sources:['momentum_manifesto'],
+      timeline:[
+        { date:'2026-05', type:'platform',  who:'Momentum / Arnold Cassola', text:'Manifesto "For a Just and Beautiful Malta" proposes a vacant property speculation tax as a housing supply measure. Cassola argues that thousands of investment-held empty properties could be brought to market through the right fiscal signal, without requiring any new development.', source:'momentum_manifesto', change:'reaffirm' },
+      ]
+    },
+    ahwa:{
+      summary:'Aħwa Maltin identifies housing affordability as one of its seven core campaign issues, linking it directly to population growth and the impact of mass immigration on housing demand. The party argues that reducing the population of foreign nationals will directly ease pressure on housing supply and prices. Detailed policy proposals beyond this framing have not been published.',
+      bullets:['Housing affordability linked to population and immigration controls','"Malta for the Maltese" — prioritise Maltese families on social housing lists','Reduce demand pressure through immigration restrictions','No detailed costed housing policy published'],
+      leaning:'neutral', score:42,
+      sources:['ahwa_campaign'],
+      timeline:[
+        { date:'2026-04', type:'statement', who:'Aħwa Maltin', text:'Campaign materials frame the housing crisis as primarily a demand problem caused by population growth through immigration, calling for immigration controls as the primary housing policy response.', source:'ahwa_campaign', change:'reaffirm' },
+      ]
+    },
+  }
+},
+{
+  id:'environment', icon:'🌿', label:'Environment & Planning',
+  desc:'Malta\'s development crisis, ODZ protection, greenhouse gas emissions, transport, green spaces, and whether the planning system protects communities or developers.',
+  fact:'Malta is the EU\'s most densely populated member state. It is also projected to be the only EU state with higher greenhouse gas emissions in 2030 than in 2005. A national protest in Valletta on 4 October 2025 drew thousands against planning reform Bills 143 and 144, which would have given the Planning Authority new powers to remove areas from ODZ (Outside Development Zone) protection. The government subsequently backtracked on the most controversial provisions.',
+  factSources:['shift_protest','adpd_emissions','moviment_graffitti'],
+  stances:{
+    pl:{
+      summary:'Labour announced commitments to national parks at Manoel Island (June 2025) and White Rocks (November 2025), and included a Green Malta initiative in its Malta Vision 2050 plan for urban green spaces and protection of agricultural land. However, the government introduced planning reform Bills 143 and 144, which would have weakened ODZ protections, generating the largest public protest in years. The government partially backtracked following public consultation.',
+      bullets:['Manoel Island and White Rocks committed to public ownership (2025)','Green Malta initiative — urban green spaces and agricultural land protection','Planning reform Bills 143/144 introduced — widely opposed, partly withdrawn','Malta Vision 2050 includes environmental sustainability chapter'],
+      leaning:'moderate', score:38,
+      sources:['pl_manifesto','shift_protest'],
+      timeline:[
+        { date:'2025-08', type:'policy',    who:'Government of Malta', text:'Planning reform Bills 143 and 144 published for consultation. Bill 143 would give the Planning Authority power to amend Local Plans, including removing areas from ODZ protection. NGOs and civil society groups immediately condemn the proposals as "disastrous."', source:'ngo_planning', change:'shift' },
+        { date:'2025-10', type:'statement', who:'Government of Malta', text:'Thousands march in Valletta on 4 October in a national protest organised by civil society groups against the planning reform bills. The government announces a review and subsequently backtracks on the most controversial provisions.', source:'shift_protest', change:'shift' },
+        { date:'2025-11', type:'policy',    who:'Robert Abela (Prime Minister)', text:'White Rocks committed to public ownership; Manoel Island confirmed as national park. Government reframes its planning narrative around conservation and community benefit following the protest fallout.', source:'pl_manifesto', change:'reaffirm' },
+      ]
+    },
+    pn:{
+      summary:'PN opposed the planning reform bills in parliament, positioning itself as a defender of communities and open spaces. The party\'s flagship environmental transport pledge is a Mass Rapid Transit system — primarily underground — to reduce traffic congestion and pollution. Borg has promised "not gravel" — a commitment to genuine open green spaces across Malta\'s towns and villages. PN\'s manifesto includes commitments to new national parks in both Malta and Gozo.',
+      bullets:['Opposed planning reform Bills 143/144','Mass Rapid Transit — primarily underground — as flagship transport pledge','Genuine open green spaces in villages and towns ("not gravel")','New national parks across Malta and Gozo'],
+      leaning:'moderate', score:54,
+      sources:['pn_manifesto'],
+      timeline:[
+        { date:'2025-10', type:'vote',      who:'Partit Nazzjonalista', text:'PN formally opposes planning reform Bills 143 and 144, joining civil society groups at the October protest rally and filing parliamentary objections to what it calls "legalised environmental destruction."', source:'shift_protest', change:'reaffirm' },
+        { date:'2026-05', type:'platform',  who:'Alex Borg (PN Leader)', text:'"New Direction" manifesto sets out Mass Rapid Transit as the flagship infrastructure pledge — primarily underground — to address traffic and reduce emissions. Also promises new national parks and genuine open spaces in every locality.', source:'pn_manifesto', change:'reaffirm' },
+      ]
+    },
+    adpd:{
+      summary:'Environment is ADPD\'s defining issue. The Green Vision 2050 plan, published September 2025, calls for 50% renewable electricity by 2030 and a fully renewable energy system; a Bus Rapid Transit integrated with walking and cycling networks; over 90% emissions reduction possible by 2050; an end to tourist accommodation expansion (hotels and short-lets); higher fines for illegal hunting and bird-trapping; a congestion charge; and pedestrianisation of town centres. ADPD is the only party warning that Malta will be the sole EU state with rising emissions by 2030.',
+      bullets:['50% renewable electricity by 2030; fully renewable energy by Green Vision 2050','Bus Rapid Transit + walking/cycling network — 90%+ emissions reduction possible by 2050','Stop increase in tourist accommodation (hotels and short-lets)','Congestion charge; pedestrianisation; end bird-trapping'],
+      leaning:'supportive', score:97,
+      sources:['adpd_manifesto','adpd_green_vision','adpd_emissions'],
+      timeline:[
+        { date:'2025-09', type:'policy',    who:'ADPD / Sandra Gauci', text:'Green Vision 2050 published. ADPD sets out a comprehensive alternative energy and transport future: decentralised renewables, integrated public transit, 90%+ emissions reduction potential, and an explicit challenge to Labour\'s fossil fuel dependency.', source:'adpd_green_vision', change:'reaffirm' },
+        { date:'2025-10', type:'statement', who:'ADPD / Sandra Gauci', text:'ADPD participates in the national planning reform protest, warning that Malta is "decades behind on emissions" and that planning failures compound the environmental emergency. Calls for a fundamental reversal of Malta\'s development trajectory.', source:'adpd_emissions', change:'reaffirm' },
+        { date:'2026-05', type:'platform',  who:'ADPD', text:'"Ilkoll" manifesto makes environment and sustainability the central organising principle across all policy areas, including housing, transport, energy, and tourism.', source:'adpd_manifesto', change:'reaffirm' },
+      ]
+    },
+    mom:{
+      summary:'Sustainable environment and planning is one of Momentum\'s four core policy pillars. The party\'s manifesto calls for stricter planning controls, transparent decision-making, and an end to political interference in planning decisions. Momentum\'s environmental chapter links directly to its governance pillar — arguing that opaque planning decisions are fundamentally a rule-of-law issue.',
+      bullets:['Sustainable environment and planning as a core manifesto pillar','Transparent planning — abolish ministerial veto on information','End political interference in planning decisions','Link environmental and governance reform'],
+      leaning:'supportive', score:70,
+      sources:['momentum_manifesto'],
+      timeline:[
+        { date:'2026-05', type:'platform',  who:'Momentum / Arnold Cassola', text:'Manifesto published. Sustainable Environment and Planning chapter argues that Malta\'s planning crisis is inseparable from its governance crisis — and that genuine environmental protection requires both stronger rules and stronger accountability.', source:'momentum_manifesto', change:'reaffirm' },
+      ]
+    },
+    ahwa:{
+      summary:'Aħwa Maltin\'s campaign does not prominently feature environmental policy. Their concern about Malta\'s density is framed through a lens of national identity and population pressure rather than ecology or emissions. No specific environmental commitments are documented in their published campaign materials.',
+      bullets:['Concern about Malta\'s density framed as identity issue, not ecology','No specific emissions, renewables, or planning reform policy published','Campaign focus on identity, immigration, and cost of living','Environmental dimension absent from documented campaign materials'],
+      leaning:'neutral', score:20,
+      sources:['ahwa_campaign'],
+      timeline:[
+        { date:'2026-04', type:'statement', who:'Aħwa Maltin', text:'Campaign launched. Environmental policy not addressed in public materials. Party frames density and overdevelopment concerns through the lens of population and national identity rather than ecology or emissions targets.', source:'ahwa_campaign', change:'reaffirm' },
+      ]
+    },
+  }
+},
+{
+  id:'immigration', icon:'✈️', label:'Immigration & Population',
+  desc:'Irregular migration via the Mediterranean, labour migration from third countries, Malta\'s population growth from 417,000 to 574,000 in thirteen years, and the political and cultural debate about identity and belonging.',
+  fact:'Irregular arrivals at Malta fell from 3,406 in 2019 to just 238 in 2024 — a 93% drop — and Malta was declassified as "under pressure" by the EU in November 2025. However, Malta\'s total population has grown by over 157,000 since 2011 (a 37% increase), with foreign nationals now exceeding 20% of residents. Population pressure ranked as the 4th biggest voter concern in March 2026 surveys.',
+  factSources:['mt_no_pressure','amphora_migration'],
+  stances:{
+    pl:{
+      summary:'Labour claims significant progress on irregular migration — pointing to the near-elimination of boat arrivals and the EU\'s reclassification of Malta as no longer "under pressure." A new Labour Migration Policy launched in phases in August and October 2025 requires employers to advertise vacancies on Jobsplus/EURES before hiring Third Country Nationals. The government frames its approach as: "tough with abusers, merciful with those who truly deserve it."',
+      bullets:['Irregular arrivals reduced 93% since 2019 — EU removes "under pressure" classification','New Labour Migration Policy — employers must advertise locally first (Aug/Oct 2025)','Labour migration framed as economic necessity, regulated not restricted','Accuses PN of "politicising" immigration for electoral purposes'],
+      leaning:'moderate', score:52,
+      sources:['pl_manifesto','mt_no_pressure','identita_labour_mig'],
+      timeline:[
+        { date:'2025-03', type:'statement', who:'Partit Laburista', text:'PL formally accuses PN of "politicising the irregular immigration issue" ahead of the election. Government points to the near-elimination of irregular arrivals as evidence of a successful managed approach.', source:'pl_immigration', change:'reaffirm' },
+        { date:'2025-08', type:'policy',    who:'Government of Malta', text:'Phase 1 of the new Labour Migration Policy takes effect: employers must now advertise vacancies on Jobsplus and EURES before sponsoring Third Country National work permits. Government frames this as managed — not restricted — migration.', source:'identita_labour_mig', change:'shift' },
+        { date:'2025-11', type:'statement', who:'Government of Malta', text:'EU formally declassifies Malta as "under pressure" from irregular migration. Government claims this as a major policy success and uses it to rebut PN and Aħwa Maltin attacks on the migration issue.', source:'mt_no_pressure', change:'reaffirm' },
+      ]
+    },
+    pn:{
+      summary:'PN focuses primarily on labour migration — the large increase in third-country nationals in the Maltese workforce — rather than irregular arrivals. The party calls the government\'s approach "a panicked, directionless reaction" and proposes a structured Labour Market Study system with skills mapping and future trend forecasting. PN also proposes requiring foreign workers in client-facing roles to complete a basic Maltese language course within their first year, and advocates for Gozo constitutional regional status partly to manage population distribution.',
+      bullets:['Labour migration approach called "panicked and directionless"','Proposes structured Labour Market Study and skills mapping system','Client-facing foreign workers to complete Maltese language course','Gozo constitutional regional status — partly to manage population pressure'],
+      leaning:'opposed', score:28,
+      sources:['pn_manifesto','pn_labour_mig'],
+      timeline:[
+        { date:'2025-09', type:'statement', who:'Partit Nazzjonalista', text:'PN formally criticises the government\'s approach to labour migration as "a panicked, directionless reaction — patch-ups and piecemeal proposals not grounded in proper study." Calls for a structured Labour Market Study to replace ad hoc policy.', source:'pn_labour_mig', change:'reaffirm' },
+        { date:'2026-05', type:'platform',  who:'Partit Nazzjonalista', text:'"New Direction" manifesto includes language requirements for client-facing foreign workers, structured skills assessment and mapping, and Gozo regional status as part of a broader managed migration framework.', source:'pn_manifesto', change:'reaffirm' },
+      ]
+    },
+    adpd:{
+      summary:'ADPD approaches migration through a lens of human rights, integration, and solidarity. The "Ilkoll" manifesto calls for humane treatment of asylum seekers, robust integration programmes, and opposition to pushback policies and illegal practices at sea. ADPD is the only party to explicitly address the rights of migrants already living and working in Malta and to oppose the "Malta for the Maltese" framing as divisive.',
+      bullets:['Humane treatment of asylum seekers — oppose illegal pushbacks','Robust integration programmes for resident migrants','Rights-based approach to all migration','Explicitly opposes "Malta for the Maltese" political framing'],
+      leaning:'supportive', score:80,
+      sources:['adpd_manifesto'],
+      timeline:[
+        { date:'2026-05', type:'platform',  who:'ADPD / Sandra Gauci', text:'"Ilkoll" manifesto includes a rights-based migration and integration chapter, calling for the full protection of asylum seekers under EU and international law and robust programmes to support the integration of migrants already resident in Malta.', source:'adpd_manifesto', change:'reaffirm' },
+      ]
+    },
+    mom:{
+      summary:'Momentum takes a centrist position on migration, supporting managed and regulated labour migration tied to genuine economic need, with stronger worker rights protections to prevent wage undercutting. The party does not use restrictive or nativist framing, but does support improved oversight and skills-matching systems.',
+      bullets:['Managed labour migration tied to genuine economic need','Stronger worker rights to prevent wage undercutting','Improved skills-matching and oversight systems','Centrist: neither open-borders nor restrictionist'],
+      leaning:'moderate', score:60,
+      sources:['momentum_manifesto'],
+      timeline:[
+        { date:'2026-05', type:'platform',  who:'Momentum', text:'Manifesto sets out managed migration policy centred on genuine economic need and worker rights protection. Cassola argues that unregulated labour importation undermines Maltese workers without benefiting the broader economy.', source:'momentum_manifesto', change:'reaffirm' },
+      ]
+    },
+    ahwa:{
+      summary:'Strict immigration control is the defining issue of Aħwa Maltin\'s campaign. Running under the slogan "Malta Għall-Maltin" (Malta for the Maltese), the party calls for significantly reducing immigration, protecting Maltese cultural identity and language, and prioritising Maltese citizens in employment, housing, and social services. The party occupies political space previously held by the now-inactive Moviment Patrijotti Maltin.',
+      bullets:['"Malta Għall-Maltin" — strict immigration controls as core policy','Protect Maltese cultural identity, language, and heritage','Prioritise Maltese citizens in employment and social services','Reduce total immigration — both labour and asylum'],
+      leaning:'opposed', score:6,
+      sources:['ahwa_campaign'],
+      timeline:[
+        { date:'2026-04', type:'statement', who:'Aħwa Maltin', text:'Campaign formally launched with "Malta Għall-Maltin" as central slogan. Party describes immigration as an "overpopulation" crisis threatening Maltese identity, culture, and economic wellbeing. Campaigns across all 13 districts with 7 candidates.', source:'ahwa_campaign', change:'reaffirm' },
+      ]
+    },
+  }
+},
+{
+  id:'ruleoflaw', icon:'⚖️', label:'Rule of Law & Governance',
+  desc:'Corruption, institutional independence, implementation of the Daphne Caruana Galizia public inquiry recommendations, freedom of information, and Malta\'s standing in EU and international rule of law rankings.',
+  fact:'Malta scored 49/100 on Transparency International\'s 2025 Corruption Perceptions Index — ranked 65th globally, its worst-ever position, and 6th worst in the EU. The EU\'s 2025 Rule of Law Report noted no progress on high-level corruption convictions and flagged an August 2025 law allowing criminal tax evasion liability to be extinguished via negotiated settlement as a serious regression. The Council of Europe\'s anti-corruption group found only 8 of 23 recommendations satisfactorily implemented.',
+  factSources:['cpi_2025','eu_rol_2025'],
+  stances:{
+    pl:{
+      summary:'Robert Abela has claimed to have delivered rule of law reforms "lock, stock and barrel." The government has implemented some structural reforms since the Daphne Caruana Galizia public inquiry. However, the EU, Transparency International, civil society group Repubblika, and the Council of Europe all note that the majority of inquiry recommendations remain unimplemented, and that the August 2025 tax settlement law — allowing criminal tax evasion liability to be cleared via negotiated settlement — represents a significant regression.',
+      bullets:['Claims reforms delivered "lock, stock and barrel"','Some structural reforms implemented post-2022','August 2025 tax settlement law — widely criticised as regression','Majority of Daphne inquiry recommendations still unimplemented'],
+      leaning:'neutral', score:32,
+      sources:['pl_manifesto','eu_rol_2025'],
+      timeline:[
+        { date:'2025-08', type:'policy',    who:'Government of Malta', text:'Parliament passes new law allowing criminal liability for tax evasion to be extinguished through a negotiated settlement. EU Rule of Law report and civil society organisations immediately criticise the legislation as a major step backward on anti-corruption.', source:'eu_rol_2025', change:'shift' },
+        { date:'2025-09', type:'statement', who:'Robert Abela (Prime Minister)', text:'Abela defends the tax settlement law as a pragmatic enforcement tool and reiterates his position that his government has implemented the Daphne inquiry reforms. Critics point to the EU and Council of Europe assessments as contradicting this claim.', source:'eu_rol_2025', change:'reaffirm' },
+        { date:'2026-02', type:'statement', who:'Transparency International', text:'2025 Corruption Perceptions Index published. Malta scores 49/100 — improved from 46 — but ranks 65th globally, its worst-ever rank, and 6th worst in the EU. Government notes the improvement; opposition focuses on the ranking.', source:'cpi_2025', change:'shift' },
+      ]
+    },
+    pn:{
+      summary:'Governance and rule of law are central to PN\'s "New Direction" manifesto. The party proposes an Unexplained Wealth law (requiring those with assets disproportionate to income to explain their origins), reform of the public broadcaster PBS to ensure genuine editorial independence, and a dedicated governance chapter across its 16 manifesto pillars. Borg frames trust in institutions as a precondition for economic and social progress.',
+      bullets:['Unexplained Wealth law — assets disproportionate to income must be explained','PBS reform — genuine editorial independence from government','Dedicated governance pillar in 16-pillar manifesto','Frames institutional trust as prerequisite for quality of life'],
+      leaning:'supportive', score:76,
+      sources:['pn_manifesto','borg_econ'],
+      timeline:[
+        { date:'2025-09', type:'statement', who:'Alex Borg (PN Leader)', text:'Borg sets governance reform as one of his three headline pledges on becoming PN leader: economic reset, governance trust, and quality of life. Frames Labour\'s rule of law failures as inseparable from economic inequality.', source:'borg_econ', change:'reaffirm' },
+        { date:'2026-05', type:'platform',  who:'Partit Nazzjonalista', text:'"New Direction" manifesto includes Unexplained Wealth law, PBS independence reform, and a comprehensive governance chapter. PN cites EU and Transparency International rankings as indictments of Labour\'s record.', source:'pn_manifesto', change:'reaffirm' },
+      ]
+    },
+    adpd:{
+      summary:'Governance reform is a core pillar of ADPD\'s "Ilkoll" manifesto. The party calls for a strong anti-corruption framework, robust freedom of information, elimination of political interference in public appointments, and accountability as a structural value in all state institutions. ADPD has consistently supported civil society groups such as Repubblika and Moviment Graffitti in their campaigns for institutional accountability.',
+      bullets:['Strong anti-corruption framework as a core manifesto pillar','Robust Freedom of Information — transparency as default','Eliminate political interference in public appointments','Support for civil society accountability campaigns'],
+      leaning:'supportive', score:92,
+      sources:['adpd_manifesto'],
+      timeline:[
+        { date:'2026-04', type:'statement', who:'ADPD / Sandra Gauci', text:'ADPD supports Repubblika\'s April 2026 warning on weakening anti-corruption frameworks, calling for the August 2025 tax settlement law to be repealed and for all Daphne inquiry recommendations to be implemented before the election.', source:'repubblika_apr26', change:'reaffirm' },
+        { date:'2026-05', type:'platform',  who:'ADPD', text:'"Ilkoll" manifesto published with governance reform as a structural theme running through all policy areas. Party argues that planning, immigration, housing, and environmental failures all have rule-of-law dimensions.', source:'adpd_manifesto', change:'reaffirm' },
+      ]
+    },
+    mom:{
+      summary:'Transparent and accountable governance is Momentum\'s first of four core pillars. Specific proposals include: abolishing the ministerial veto on freedom of information requests; transforming the Freedom of Information Act into an "Open Malta Act"; requiring a two-thirds parliamentary supermajority for key public appointments; and implementing e-voting for all Maltese citizens. Cassola argues genuine governance reform is the precondition for all other change.',
+      bullets:['Abolish ministerial veto on freedom of information requests','Transform Freedom of Information Act into "Open Malta Act"','Two-thirds parliamentary majority for key public appointments','E-voting for all Maltese citizens'],
+      leaning:'supportive', score:90,
+      sources:['momentum_manifesto'],
+      timeline:[
+        { date:'2026-04', type:'statement', who:'Arnold Cassola (Momentum)', text:'Cassola positions Momentum as the governance reform party: "Without accountability, no other reform is sustainable." Announces governance as the first of four manifesto pillars and frames all other policies as dependent on institutional credibility.', source:'momentum_manifesto', change:'reaffirm' },
+        { date:'2026-05', type:'platform',  who:'Momentum', text:'Manifesto published. Transparent and Accountable Governance chapter: Open Malta Act, abolish ministerial FOI veto, two-thirds majority for appointments, and e-voting. All 259 measures costed and referenced to civil society input.', source:'momentum_manifesto', change:'reaffirm' },
+      ]
+    },
+    ahwa:{
+      summary:'Aħwa Maltin uses anti-establishment rhetoric in its campaign, positioning itself against both Labour and PN as a voice for ordinary Maltese citizens. However, the party has not published detailed governance reform proposals. Its campaign materials focus primarily on immigration, identity, and cost of living rather than institutional or anti-corruption reform.',
+      bullets:['Anti-establishment rhetoric — against both Labour and PN','No detailed governance reform proposals published','Focus on identity and cost of living over institutional reform','Appeals to Maltese citizens who feel unrepresented by both main parties'],
+      leaning:'neutral', score:40,
+      sources:['ahwa_campaign'],
+      timeline:[
+        { date:'2026-04', type:'statement', who:'Aħwa Maltin', text:'Campaign positions Aħwa Maltin as the voice of ordinary Maltese citizens ignored by both Labour and PN. Governance reform is framed in populist terms — drain the swamp — without specific institutional proposals.', source:'ahwa_campaign', change:'reaffirm' },
+      ]
+    },
+  }
+},
+{
+  id:'healthcare', icon:'🏥', label:'Healthcare',
+  desc:'Waiting times at hospitals and health centres, investment in public health infrastructure, Mater Dei Hospital capacity, mental health services, and access to specialist care.',
+  fact:'Budget 2025 allocated €14 million specifically to reduce surgical waiting lists. A new 24/7 non-emergency triage service was piloted at Mosta Health Centre in 2025, designed to divert approximately 50 patients per day away from Mater Dei A&E. Six-hour waits at busy health centres have been documented in news reports. Malta spent approximately €1,046 per capita on public health in 2022 (WHO data).',
+  factSources:['healthcare_budget25','mosta_pilot'],
+  stances:{
+    pl:{
+      summary:'Labour points to sustained increases in healthcare spending, the €14 million waiting list reduction investment, the new 24/7 triage service, and a series of targeted pledges: free endometriosis medication, a new women\'s health clinic, and continued Mater Dei investment. The government frames its approach as evidence-based and incremental, with services improving year on year.',
+      bullets:['€14 million to reduce surgical waiting lists (Budget 2025)','24/7 non-emergency triage pilot — target 50 patient/day A&E reduction','Free endometriosis medication pledged (2026 manifesto)','New women\'s health clinic committed'],
+      leaning:'supportive', score:66,
+      sources:['pl_manifesto','healthcare_budget25','mosta_pilot','pl_endometriosis'],
+      timeline:[
+        { date:'2024-11', type:'policy',    who:'Government of Malta', text:'Budget 2025 allocates €14 million specifically for reducing surgical waiting times. Government identifies waiting lists as the primary public concern on healthcare and commits to measurable reduction targets.', source:'healthcare_budget25', change:'reaffirm' },
+        { date:'2025-09', type:'policy',    who:'Government of Malta', text:'24/7 triage pilot scheme launched at Mosta Health Centre. Designed to keep non-emergency cases away from Mater Dei A&E. Pilot aims to reduce unnecessary A&E attendances by approximately 50 patients per day if rolled out nationally.', source:'mosta_pilot', change:'reaffirm' },
+        { date:'2026-05', type:'platform',  who:'Robert Abela (Prime Minister)', text:'"Int Malta" manifesto pledges free endometriosis medication for all women requiring it, a new women\'s health clinic, and continued investment in Mater Dei capacity and digital health records.', source:'pl_endometriosis', change:'reaffirm' },
+      ]
+    },
+    pn:{
+      summary:'The Nationalists have made healthcare one of their most ambitious manifesto commitments, pledging to build three new hospitals in Malta and fully upgrade Mater Dei, create a Health Park, and build both a new hospital in Gozo and a new psychiatric hospital. Borg has described Labour\'s healthcare provision as an "abandonment" of patients and positioned healthcare investment as the most urgent quality-of-life improvement Malta needs.',
+      bullets:['Build three new hospitals and a Health Park in Malta','Full upgrade of Mater Dei Hospital','New dedicated hospital in Gozo','New psychiatric hospital'],
+      leaning:'supportive', score:82,
+      sources:['pn_manifesto','pn_healthcare_pledge'],
+      timeline:[
+        { date:'2026-05', type:'platform',  who:'Alex Borg (PN Leader)', text:'"New Direction" manifesto healthcare chapter: three new hospitals, Health Park, full Mater Dei upgrade, dedicated Gozo hospital, new psychiatric hospital. PN frames this as the most comprehensive healthcare investment plan ever proposed by a Maltese opposition party.', source:'pn_healthcare_pledge', change:'reaffirm' },
+      ]
+    },
+    adpd:{
+      summary:'ADPD\'s "Ilkoll" manifesto gives particular prominence to mental health services, which the party argues have been chronically underfunded relative to physical healthcare. ADPD calls for equity-based healthcare funding, greater investment in community health centres, and a preventative health model that addresses social determinants of health including housing, environment, and income.',
+      bullets:['Mental health services as a priority — currently underfunded','Equity-based healthcare funding framework','Investment in community health centres','Preventative model — address social determinants of health'],
+      leaning:'supportive', score:80,
+      sources:['adpd_manifesto'],
+      timeline:[
+        { date:'2026-05', type:'platform',  who:'ADPD', text:'"Ilkoll" manifesto dedicates specific focus to mental health as an underfunded priority and to the preventative health model, arguing that housing, environment, and economic stability are inseparable from health outcomes.', source:'adpd_manifesto', change:'reaffirm' },
+      ]
+    },
+    mom:{
+      summary:'Momentum highlights healthcare as a social and economic justice issue, arguing that long waiting times disproportionately affect lower-income households who cannot afford private healthcare alternatives. The party supports significant investment in public health infrastructure, mental health services, and reducing the structural inequalities in access to care.',
+      bullets:['Healthcare as social and economic justice issue','Investment in mental health and community services','Reduce two-tier divide between public and private healthcare','Address structural inequalities in access to care'],
+      leaning:'supportive', score:72,
+      sources:['momentum_manifesto'],
+      timeline:[
+        { date:'2026-05', type:'platform',  who:'Momentum', text:'Manifesto addresses healthcare access as part of the social justice pillar, highlighting the two-tier divide between those who can afford private care and those relying on an overstretched public system.', source:'momentum_manifesto', change:'reaffirm' },
+      ]
+    },
+    ahwa:{
+      summary:'Aħwa Maltin supports improved public healthcare, particularly for Maltese citizens, and links healthcare system pressure to the population growth caused by immigration. The party has not published a detailed healthcare policy. Campaign materials frame waiting times and capacity as consequences of overpopulation rather than of underfunding.',
+      bullets:['Supports improved public healthcare for Maltese citizens','Links healthcare capacity pressure to population growth','No detailed healthcare policy published','Waiting times framed as an immigration consequence'],
+      leaning:'neutral', score:44,
+      sources:['ahwa_campaign'],
+      timeline:[
+        { date:'2026-04', type:'statement', who:'Aħwa Maltin', text:'Campaign frames healthcare system pressure as a direct consequence of population growth, arguing that reducing immigration will free up capacity without requiring major new investment. No detailed policy proposals published.', source:'ahwa_campaign', change:'reaffirm' },
+      ]
+    },
+  }
+},
+{
+  id:'energy', icon:'⚡', label:'Energy & Utilities',
+  desc:'Malta\'s electricity and fuel subsidy regime, household energy costs, the transition to renewables, fossil fuel dependency, and energy security.',
+  fact:'Malta\'s domestic electricity costs €0.13 per kWh — roughly half the EU average of €0.28/kWh — maintained through government subsidies estimated at approximately €320 million per year. Malta generates almost all its electricity from fossil fuels (primarily imported natural gas). ADPD has warned Malta will be the only EU member state with higher greenhouse gas emissions in 2030 than in 2005.',
+  factSources:['electricity_price','fuel_subsidies','adpd_fossil'],
+  stances:{
+    pl:{
+      summary:'Labour has maintained energy price subsidies throughout its term in government, shielding households from the global energy price rises that affected the rest of Europe since 2022. The government frames below-market energy bills as a direct social benefit to every Maltese household. Budget 2026 committed to maintaining subsidies and Abela has stated his ambition for Malta to become the most AI-friendly and digitally advanced country in Europe — requiring significant energy infrastructure investment.',
+      bullets:['Energy subsidies maintained — shielding households from global price rises','€0.13/kWh domestic electricity — half the EU average','Committed to subsidies through 2026 and beyond','Digital infrastructure investment tied to energy security pledge'],
+      leaning:'supportive', score:68,
+      sources:['pl_manifesto','fuel_subsidies'],
+      timeline:[
+        { date:'2025-01', type:'policy',    who:'Robert Abela (Prime Minister)', text:'Government reconfirms fuel and electricity subsidies will continue through 2026. Abela states ambition for Malta to become the "most AI-friendly" country in Europe — a digital economy pledge that requires reliable and affordable energy infrastructure.', source:'fuel_subsidies', change:'reaffirm' },
+        { date:'2025-11', type:'policy',    who:'Government of Malta', text:'Budget 2026 maintains energy subsidy commitment. Government argues the €320 million annual subsidy cost is justified by the social benefit of affordable bills for every household and business.', source:'kpmg_budget26', change:'reaffirm' },
+      ]
+    },
+    pn:{
+      summary:'PN supports maintaining affordable energy bills for households and has not published a detailed renewable energy transition plan. The party\'s infrastructure commitments — including Mass Rapid Transit — have indirect energy implications, but the manifesto does not set out specific targets for renewable electricity generation, subsidy reform, or fossil fuel phase-out.',
+      bullets:['Supports maintaining affordable energy bills','Mass Rapid Transit pledge — indirect emissions/energy benefit','No specific renewables targets published','No detailed fossil fuel phase-out policy'],
+      leaning:'moderate', score:46,
+      sources:['pn_manifesto'],
+      timeline:[
+        { date:'2026-05', type:'platform',  who:'Partit Nazzjonalista', text:'"New Direction" manifesto includes transport and infrastructure investment (Mass Rapid Transit) with indirect energy and emissions benefits, but does not set specific renewable electricity generation targets or a timeline for fossil fuel phase-out.', source:'pn_manifesto', change:'reaffirm' },
+      ]
+    },
+    adpd:{
+      summary:'Energy transition is a core element of ADPD\'s Green Vision 2050. The party warns that fossil fuel subsidies, while cheap for households now, expose Malta to debt and price shocks in the long term and lock in an emissions trajectory that will make Malta the only EU state with rising emissions by 2030. ADPD calls for 50% renewable electricity by 2030, large-scale rooftop solar investment, and a phase-out of fossil fuel dependency.',
+      bullets:['50% renewable electricity by 2030 (Green Vision 2050)','Large-scale rooftop solar investment','Fossil fuel subsidies criticised as long-term debt and price-shock risk','Malta projected only EU state with rising emissions by 2030 without action'],
+      leaning:'supportive', score:96,
+      sources:['adpd_manifesto','adpd_fossil','adpd_emissions'],
+      timeline:[
+        { date:'2025-09', type:'policy',    who:'ADPD / Sandra Gauci', text:'Green Vision 2050 published. Energy chapter: 50% renewable electricity by 2030, large-scale rooftop solar, decentralised energy generation, and a managed phase-out of fossil fuel subsidies in favour of social investment.', source:'adpd_green_vision', change:'reaffirm' },
+        { date:'2025-10', type:'statement', who:'ADPD', text:'Warns that fossil fuel dependency leaves Malta exposed to debt and price shocks. ADPD notes that Malta\'s €320m/year subsidy bill could instead fund transformative social investment if replaced with a genuine renewables transition.', source:'adpd_fossil', change:'reaffirm' },
+      ]
+    },
+    mom:{
+      summary:'Momentum includes sustainable energy as part of its environmental pillar, supporting renewable investment and reduced fossil fuel dependency. The party links energy transition to its governance agenda — arguing that transparent, accountable decision-making on energy contracts and infrastructure is essential for Malta\'s long-term energy security.',
+      bullets:['Sustainable energy as part of environment pillar','Support for renewable investment and fossil fuel reduction','Transparent energy contract governance','Energy security linked to governance accountability'],
+      leaning:'supportive', score:64,
+      sources:['momentum_manifesto'],
+      timeline:[
+        { date:'2026-05', type:'platform',  who:'Momentum', text:'Manifesto links energy policy to both the environment and governance pillars: transparent energy contracts, investment in renewables, and reduced long-term fiscal exposure from fossil fuel subsidies.', source:'momentum_manifesto', change:'reaffirm' },
+      ]
+    },
+    ahwa:{
+      summary:'Aħwa Maltin supports maintaining low energy bills for Maltese households and has not published a renewable energy policy. The party\'s focus is on protecting affordability for ordinary families rather than energy transition, and its campaign materials do not address Malta\'s fossil fuel dependency or emissions trajectory.',
+      bullets:['Supports maintaining low energy bills for households','No renewable energy policy published','Affordability over transition as priority','No emissions or fossil fuel phase-out position documented'],
+      leaning:'neutral', score:36,
+      sources:['ahwa_campaign'],
+      timeline:[
+        { date:'2026-04', type:'statement', who:'Aħwa Maltin', text:'Campaign calls for maintaining household energy affordability as a basic commitment to ordinary Maltese families. No position on the renewable energy transition, fossil fuel subsidies, or Malta\'s emissions trajectory has been published.', source:'ahwa_campaign', change:'reaffirm' },
+      ]
+    },
+  }
+},
+];
+
+// ── APP STATE ──────────────────────────────────────────────────────────────────
+let activeIssue = ISSUES[0].id;
+let activeView  = 'detail';
+let enabledParties = new Set(PARTIES.map(p => p.id));
+
+// ── HELPERS ────────────────────────────────────────────────────────────────────
+function getPill(l) {
+  if (l==='supportive') return { cls:'pill-supportive', label:'Expand & invest' };
+  if (l==='moderate')   return { cls:'pill-moderate',   label:'Reform & review' };
+  if (l==='opposed')    return { cls:'pill-opposed',    label:'Restrict & reduce' };
+  return { cls:'pill-neutral', label:'Neutral / mixed' };
+}
+function typeLabel(t) {
+  return ({manifesto:'Manifesto',platform:'Platform',speech:'Speech',interview:'Interview',vote:'Vote / Division',policy:'Policy / Law',statement:'Statement',eo:'Executive Order'})[t] || t;
+}
+function fmtDate(d) {
+  const [y,m] = d.split('-');
+  return (['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'])[+m]+' '+y;
+}
+
+// ── BUILD SIDEBAR ──────────────────────────────────────────────────────────────
+function buildSidebar() {
+  const list = document.getElementById('issueList');
+  list.innerHTML = '';
+  ISSUES.forEach(issue => {
+    const btn = document.createElement('button');
+    btn.className = 'issue-btn'+(issue.id===activeIssue?' active':'');
+    btn.dataset.id = issue.id;
+    btn.innerHTML = `<span class="issue-icon">${issue.icon}</span>${issue.label}`;
+    btn.addEventListener('click', ()=>selectIssue(issue.id));
+    list.appendChild(btn);
+  });
+
+  const filters = document.getElementById('partyFilters');
+  filters.innerHTML = '';
+  PARTIES.forEach(p => {
+    const label = document.createElement('label');
+    label.className = 'party-check';
+    label.innerHTML = `<input type="checkbox" checked data-party="${p.id}"><span class="party-dot" style="background:${p.color}"></span><span class="party-name">${p.name}</span>`;
+    label.querySelector('input').addEventListener('change', e => {
+      if (e.target.checked) enabledParties.add(p.id); else enabledParties.delete(p.id);
+      renderIssue(activeIssue);
+    });
+    filters.appendChild(label);
+  });
+}
+
+function selectIssue(id) {
+  activeIssue = id;
+  document.querySelectorAll('.issue-btn').forEach(b=>b.classList.toggle('active',b.dataset.id===id));
+  renderIssue(id);
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────────────────
+function renderIssue(id) {
+  const issue = ISSUES.find(i=>i.id===id);
+  if (!issue) return;
+
+  document.getElementById('issueTitleIcon').textContent = issue.icon;
+  document.getElementById('issueTitleText').textContent = issue.label;
+  document.getElementById('issueDesc').textContent = issue.desc;
+  document.getElementById('factText').textContent = issue.fact;
+
+  const citDiv = document.getElementById('factCitations');
+  citDiv.innerHTML = '';
+  (issue.factSources||[]).forEach(key => {
+    const s = S(key);
+    const a = document.createElement('a');
+    a.className='cite-link'; a.href=s.url; a.target='_blank'; a.rel='noopener';
+    a.textContent = s.label;
+    citDiv.appendChild(a);
+  });
+
+  const specRows = document.getElementById('spectrumRows');
+  specRows.innerHTML = '';
+  PARTIES.filter(p=>enabledParties.has(p.id)).forEach(p => {
+    const st = issue.stances[p.id];
+    const row = document.createElement('div');
+    row.className='spectrum-row';
+    row.innerHTML=`<span class="spectrum-party">${p.name}</span><div class="spectrum-bar-wrap"><div class="spectrum-fill" style="width:${st.score}%;background:${p.color}"></div></div><span class="spectrum-val">${st.score}/100</span>`;
+    specRows.appendChild(row);
+  });
+
+  if (activeView==='detail') renderDetailCards(issue);
+  else renderCompare(issue);
+}
+
+function renderDetailCards(issue) {
+  const grid = document.getElementById('stanceGrid');
+  grid.innerHTML = '';
+
+  PARTIES.filter(p=>enabledParties.has(p.id)).forEach(p => {
+    const st = issue.stances[p.id];
+    const pill = getPill(st.leaning);
+    const cardId = `tl-${p.id}-${issue.id}`;
+
+    const sourceChips = (st.sources||[]).map(key=>{
+      const s=S(key);
+      return `<a class="source-chip" href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`;
+    }).join('');
+
+    const tlEntries = (st.timeline||[]).map(e=>{
+      const s=S(e.source);
+      const changeBadge = e.change==='shift'
+        ? '<span class="tl-change shift">Position shift</span>'
+        : e.change==='reaffirm'
+          ? '<span class="tl-change reaffirm">Reaffirmed</span>'
+          : '';
+      return `<div class="timeline-entry">
+        <div class="tl-dot" style="background:${p.color}"></div>
+        <div class="tl-content">
+          <div class="tl-meta">
+            <span class="tl-date">${fmtDate(e.date)}</span>
+            <span class="tl-type type-${e.type}">${typeLabel(e.type)}</span>
+            <span class="tl-who">${e.who}</span>
+            ${changeBadge}
+          </div>
+          <div class="tl-text">${e.text}</div>
+          <a class="tl-source" href="${s.url}" target="_blank" rel="noopener">${s.label} ↗</a>
+        </div>
+      </div>`;
+    }).join('');
+
+    const card = document.createElement('div');
+    card.className='stance-card';
+    card.innerHTML=`
+      <div class="stance-card-header">
+        <div class="party-badge">
+          <div class="party-color-bar" style="background:${p.color}"></div>
+          <div>
+            <div class="party-badge-name">${p.name}</div>
+            <div class="party-badge-full">${p.full}</div>
           </div>
         </div>
+        <div class="header-right">
+          <span class="stance-pill ${pill.cls}">${pill.label}</span>
+          <button class="timeline-toggle" data-target="${cardId}">
+            Position history <span style="opacity:0.7">(${(st.timeline||[]).length})</span>
+          </button>
+        </div>
       </div>
-    </section>
+      <div class="stance-body">
+        <p class="stance-summary">${st.summary}</p>
+        <ul class="stance-bullets">${st.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
+        <div class="stance-sources">
+          <span class="stance-source-label">Sources:</span>
+          ${sourceChips}
+        </div>
+      </div>
+      <div class="timeline-panel" id="${cardId}">
+        <div class="timeline-inner">
+          <div class="timeline-heading">Position history</div>
+          <div class="timeline-entries">${tlEntries}</div>
+        </div>
+      </div>`;
+    grid.appendChild(card);
 
-    <footer class="site-footer">
-      <span class="footer-copy">© Sam Borni 2026</span>
-      <ul class="footer-links">
-        <li><a href="https://www.linkedin.com/in/samborni/" target="_blank" rel="noopener">LinkedIn</a></li>
-      </ul>
-    </footer>
-  </div>
+    card.querySelector('.timeline-toggle').addEventListener('click', function(){
+      const panel=document.getElementById(this.dataset.target);
+      const open=panel.classList.toggle('open');
+      this.classList.toggle('open',open);
+      this.childNodes[0].textContent = open ? 'Hide history ' : 'Position history ';
+    });
+  });
+}
+
+function renderCompare(issue) {
+  const head=document.getElementById('compareHead');
+  const body=document.getElementById('compareBody');
+  const visible=PARTIES.filter(p=>enabledParties.has(p.id));
+
+  head.innerHTML=`<th style="min-width:130px">Issue / Party</th>`+
+    visible.map(p=>`<th><span style="display:inline-flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:${p.color};display:inline-block"></span>${p.name}</span></th>`).join('');
+
+  body.innerHTML='';
+  ISSUES.forEach(iss=>{
+    const row=document.createElement('tr');
+    if (iss.id===issue.id) row.style.background='var(--accent-light)';
+    row.innerHTML=`<td style="font-weight:500;font-size:13px">${iss.icon} ${iss.label}</td>`+
+      visible.map(p=>{
+        const s=iss.stances[p.id];
+        const pill=getPill(s.leaning);
+        const hasShift=(s.timeline||[]).some(t=>t.change==='shift');
+        const latest=(s.timeline||[]).slice(-1)[0];
+        return `<td>
+          <span class="stance-pill ${pill.cls}" style="font-size:10px;padding:2px 8px">${s.score}/100</span>
+          ${hasShift?'<span class="shift-badge" title="Position has shifted since 2022">⟳</span>':''}
+          ${latest?`<div style="font-size:10px;color:var(--text-3);margin-top:2px">${fmtDate(latest.date)}</div>`:''}
+        </td>`;
+      }).join('');
+    row.addEventListener('click',()=>{
+      activeView='detail';
+      document.querySelectorAll('.view-tab').forEach(t=>t.classList.toggle('active',t.dataset.view==='detail'));
+      document.getElementById('detailView').classList.remove('hidden');
+      document.getElementById('compareView').classList.add('hidden');
+      selectIssue(iss.id);
+    });
+    body.appendChild(row);
+  });
+}
+
+// ── TABS ───────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.view-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    activeView=tab.dataset.view;
+    document.querySelectorAll('.view-tab').forEach(t=>t.classList.toggle('active',t.dataset.view===activeView));
+    document.getElementById('detailView').classList.toggle('hidden',activeView!=='detail');
+    document.getElementById('compareView').classList.toggle('hidden',activeView!=='compare');
+    renderIssue(activeIssue);
+  });
+});
+
+buildSidebar();
+renderIssue(activeIssue);
+</script>
 </body>
 </html>

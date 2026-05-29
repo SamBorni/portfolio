@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PolicyLens — UK Party Comparison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-mark">Policy<span>Lens</span></span>
+      <div class="country-selector">
+        <select class="country-select" onchange="window.location.href=this.value">
+          <option value="policy-lens-uk.html" selected>🇬🇧 United Kingdom</option>
+          <option value="policy-lens-us.html">🇺🇸 United States</option>
+          <option value="policy-lens-mt.html">🇲🇹 Malta</option>
+        </select>
+      </div>
+    </div>
+    <div class="nav-pills">
+      <button class="nav-pill active">Issues</button>
+      <button class="nav-pill">About</button>
+      <button class="nav-pill">Sources</button>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div style="margin-bottom:1rem;"><span class="election-badge">2024 General Election &amp; Post-Election · Every Claim Source-Linked</span></div>
+    <h1>Where do the parties really stand?</h1>
+    <p>Compare UK political parties on the issues that matter to you. Every statistic and policy claim is linked to its primary source. Position timelines track how stances have shifted since the election.</p>
+    <div class="hero-meta">
+      <span class="hero-meta-item">Every claim source-linked</span>
+      <span class="hero-meta-item">6 parties tracked</span>
+      <span class="hero-meta-item">6 policy areas</span>
+      <span class="hero-meta-item">Live position timelines</span>
+    </div>
+  </div>
+</div>
+
+<main>
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Policy Areas</div>
+      <div class="issue-list" id="issueList"></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Show Parties</div>
+      <div class="party-filters" id="partyFilters"></div>
+    </div>
+    <div class="sidebar-section" style="border-top:1px solid var(--border);padding-top:1rem;">
+      <div style="font-size:12px;color:var(--text-3);line-height:1.8;">
+        All claims linked to primary sources — official manifestos, ONS, OBR, NAO, parliamentary records, and verified news reports.<br><br>
+        <span style="display:inline-flex;align-items:center;gap:5px;"><span style="background:#FEF5E7;color:#9A5F00;font-size:10px;font-weight:600;padding:1px 5px;border-radius:3px;">⟳ Position shift</span> shown where stance has changed post-election.</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="content">
+    <div class="view-tabs">
+      <button class="view-tab active" data-view="detail">Detailed View</button>
+      <button class="view-tab" data-view="compare">Quick Compare</button>
+    </div>
+
+    <div id="detailView">
+      <div class="issue-header">
+        <div class="issue-title-row">
+          <div class="issue-title-icon" id="issueTitleIcon"></div>
+          <div class="issue-title" id="issueTitleText"></div>
+        </div>
+        <div class="issue-description" id="issueDesc"></div>
+      </div>
+
+      <div class="fact-strip">
+        <div class="fact-strip-body">
+          <span class="fact-icon">ℹ</span>
+          <div class="fact-text" id="factText"></div>
+        </div>
+        <div class="fact-citations" id="factCitations"></div>
+      </div>
+
+      <div class="agreement-section">
+        <div class="agreement-label">Policy Ambition Spectrum</div>
+        <div id="spectrumRows"></div>
+        <div class="spectrum-axis"><span>Less interventionist</span><span>More interventionist</span></div>
+      </div>
+
+      <div class="stance-grid" id="stanceGrid"></div>
+    </div>
+
+    <div id="compareView" class="hidden">
+      <div class="compare-table-wrap">
+        <table class="compare-table">
+          <thead><tr id="compareHead"></tr></thead>
+          <tbody id="compareBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <strong>PolicyLens</strong> · Nonpartisan civic information platform<br>
+  All claims linked to primary sources. Positions reflect publicly stated policies, manifestos, and parliamentary records.<br>
+  <span style="font-size:10px;opacity:0.5;">Not affiliated with any political party, campaign, or government body. Last updated May 2025.</span>
+</footer>
+
+<script>
+const PARTIES = [
+  { id:'lab', name:'Labour',   full:'Labour Party',            color:'#E4003B', light:'#FDE8ED' },
+  { id:'con', name:'Tories',   full:'Conservative Party',      color:'#003087', light:'#E6ECF7' },
+  { id:'ld',  name:'Lib Dems', full:'Liberal Democrats',       color:'#D4820A', light:'#FEF5E7' },
+  { id:'grn', name:'Greens',   full:'Green Party',             color:'#00B140', light:'#E6F7EC' },
+  { id:'ref', name:'Reform',   full:'Reform UK',               color:'#12B6CF', light:'#E8F8FB' },
+  { id:'snp', name:'SNP',      full:'Scottish National Party', color:'#B8A800', light:'#FEFDE8' },
+];
+
+const SOURCES = {
+  lab_manifesto:      { label:'Labour Manifesto 2024',                        url:'https://labour.org.uk/change/' },
+  con_manifesto:      { label:'Conservative Manifesto 2024',                  url:'https://www.conservatives.com/our-plan' },
+  ld_manifesto:       { label:'Lib Dem Manifesto 2024',                       url:'https://www.libdems.org.uk/plan' },
+  grn_manifesto:      { label:'Green Party Manifesto 2024',                   url:'https://greenparty.org.uk/about/our-manifesto/' },
+  ref_contract:       { label:'Reform UK Contract 2024',                      url:'https://www.reformparty.uk/reform-contract' },
+  snp_manifesto:      { label:'SNP Manifesto 2024',                           url:'https://www.snp.org/manifesto/' },
+  nhs_rtt:            { label:'NHS England – Referral-to-Treatment Data',     url:'https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/' },
+  nhs_social_care:    { label:'Nuffield Trust – Social Care 360',             url:'https://www.nuffieldtrust.org.uk/resource/social-care-360' },
+  ons_migration:      { label:'ONS – Net Migration Statistics 2023',          url:'https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/internationalmigration/bulletins/migrationstatisticsquarterlysummary/july2024' },
+  nao_rwanda:         { label:'NAO – Rwanda Scheme Costs Report',             url:'https://www.nao.org.uk/reports/asylum-seekers-and-illegal-migration/' },
+  ho_asylum:          { label:'Home Office – Asylum Statistics Q4 2023',      url:'https://www.gov.uk/government/statistics/immigration-statistics-year-ending-december-2023' },
+  obr_debt:           { label:'OBR – Economic & Fiscal Outlook Mar 2024',     url:'https://obr.uk/efo/economic-and-fiscal-outlook-march-2024/' },
+  ons_wages:          { label:'ONS – UK Real Wages Bulletin 2024',            url:'https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours' },
+  ccc_progress:       { label:'Climate Change Committee – Progress Report 2024', url:'https://www.theccc.org.uk/publication/progress-in-reducing-emissions-2024-report-to-parliament/' },
+  nsta_production:    { label:'NSTA – North Sea Production Statistics',       url:'https://www.nstauthority.co.uk/data-centre/nsta-open-data/' },
+  ons_hpi:            { label:'ONS – UK House Price Index 2024',              url:'https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/housepriceindex/march2024' },
+  dluhc_hbs:          { label:'DLUHC – Housing Supply Statistics 2023',       url:'https://www.gov.uk/government/collections/house-building-statistics' },
+  cpag_poverty:       { label:'CPAG – Child Poverty Facts & Figures 2024',    url:'https://cpag.org.uk/child-poverty/child-poverty-facts-and-figures' },
+  cpag_twochild:      { label:'CPAG – Two-Child Limit Impact Analysis',       url:'https://cpag.org.uk/campaigns/two-child-limit' },
+  dwp_uc:             { label:'DWP – Universal Credit Statistics Feb 2024',   url:'https://www.gov.uk/government/collections/universal-credit-statistics' },
+  dfe_workforce:      { label:'DfE – School Workforce in England Nov 2023',   url:'https://explore-education-statistics.service.gov.uk/find-statistics/school-workforce-in-england' },
+  nato_spending:      { label:'NATO – Defence Expenditure of Members 2024',   url:'https://www.nato.int/cps/en/natohq/topics_49198.htm' },
+  uk_ukraine:         { label:'UK Gov – UK Support for Ukraine Factsheet',    url:'https://www.gov.uk/government/publications/uk-support-for-ukraine' },
+  nao_hs2:            { label:'NAO – HS2 Programme Progress Review 2023',     url:'https://www.nao.org.uk/reports/high-speed-two-progress-review/' },
+  cpre_buses:         { label:'CPRE – State of Rural Bus Services 2023',      url:'https://www.cpre.org.uk/resources/the-state-of-rural-bus-services/' },
+  lords_membership:   { label:'Parliament.uk – Composition of the Lords',     url:'https://www.parliament.uk/mps-lords-and-offices/lords/composition-of-the-lords/' },
+  ec_indyref:         { label:'Electoral Commission – Scottish Referendum 2014', url:'https://www.electoralcommission.org.uk/who-we-are-and-what-we-do/elections-and-referendums/past-elections-and-referendums/scottish-independence-referendum' },
+  nhs_10yr:           { label:'NHS England – 10 Year Plan Consultation 2025', url:'https://www.england.nhs.uk/long-term-plan/' },
+  budget_oct24:       { label:'HM Treasury – Autumn Budget 2024',             url:'https://www.gov.uk/government/publications/autumn-budget-2024' },
+  immigration_wp:     { label:'Home Office – Immigration White Paper Dec 2024', url:'https://www.gov.uk/government/publications/immigration-white-paper' },
+  gbe_act:            { label:'Great British Energy Act – Royal Assent Feb 2025', url:'https://www.gov.uk/government/news/great-british-energy-bill-becomes-law' },
+  con_leadership:     { label:'Conservative Party – Leadership Result Nov 2024', url:'https://www.conservatives.com/' },
+  con_spring25:       { label:'Conservative Spring Conference 2025',           url:'https://www.conservatives.com/news' },
+  dwp_pathways:       { label:'DWP – Pathways to Work Green Paper Mar 2025',  url:'https://www.gov.uk/government/publications/pathways-to-work-reforming-benefits-and-support-to-get-britain-working-green-paper' },
+  snp_swinney:        { label:'SNP – John Swinney First Minister Statements',  url:'https://www.snp.org' },
+  yougov_vi:          { label:'YouGov – UK Voting Intention Tracker 2025',    url:'https://yougov.co.uk/topics/politics/trackers/voting-intention' },
+  renters_bill:       { label:'Parliament – Renters Rights Bill 2024-25',      url:'https://bills.parliament.uk/bills/3764' },
+};
+
+function S(key) { return SOURCES[key] || { label: key, url: '#' }; }
+
+const ISSUES = [
+{
+  id:'nhs', icon:'🏥', label:'NHS & Healthcare',
+  desc:'Policies on NHS funding, waiting lists, mental health provision, social care reform, and healthcare workforce.',
+  fact:'NHS waiting lists in England reached 7.5 million in early 2024, with over 300,000 patients waiting more than a year for treatment. Social care has faced a decade of real-terms funding cuts; an estimated 1.5 million people have unmet care needs.',
+  factSources:['nhs_rtt','nhs_social_care'],
+  stances:{
+    lab:{
+      summary:'Pledged 40,000 extra weekly NHS appointments, 8,500 new mental health staff, and £25.7bn additional NHS revenue spending by 2028/29. The October 2024 Budget delivered the largest real-terms NHS rise since 2010. A 10 Year NHS Plan was launched in 2025, with a structural merger of NHS England and DHSC.',
+      bullets:['40,000 extra appointments weekly (Manifesto)','£22.6bn NHS revenue increase – Autumn Budget 2024','8,500 new mental health workers pledged','10 Year NHS Plan consultation launched (Jan 2025)'],
+      leaning:'supportive', score:80,
+      sources:['lab_manifesto','budget_oct24','nhs_10yr'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Labour Party', text:'Manifesto pledges 40,000 extra weekly NHS appointments, 8,500 new mental health staff, and abolition of two-year waits within the parliament. Funded by taxing non-doms and adding VAT to private school fees.', source:'lab_manifesto', change:'reaffirm' },
+        { date:'2024-10', type:'policy',    who:'Rachel Reeves (Chancellor)', text:'Autumn Budget allocates £22.6bn increase in NHS day-to-day spending and £3.1bn for NHS capital – described by the Chancellor as the largest real-terms rise since 2010.', source:'budget_oct24', change:'reaffirm' },
+        { date:'2025-01', type:'policy',    who:'Wes Streeting (Health Secretary)', text:'10 Year Health Plan consultation launched. Core themes: hospital to community, analogue to digital, sickness to prevention. NHS England to be merged with DHSC in a major structural reform.', source:'nhs_10yr', change:'shift' },
+      ]
+    },
+    con:{
+      summary:'In government, promised efficiency-led NHS reform and no new ring-fenced health tax. In opposition, has criticised Labour\'s structural NHS reform as disruptive, and argued NHS England merger risks independence.',
+      bullets:['NHS efficiency drive – no new health tax (Manifesto)','Oppose NHS England/DHSC merger','Oppose employer NI rise as "tax on jobs"','Digital investment over headline spending'],
+      leaning:'moderate', score:44,
+      sources:['con_manifesto','con_leadership'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Conservative Party', text:'Manifesto promised 2 million extra NHS appointments via digital reform and efficiency gains. No new dedicated NHS tax. Focused on reducing administration rather than headline funding.', source:'con_manifesto', change:'reaffirm' },
+        { date:'2024-11', type:'speech',    who:'Kemi Badenoch (Conservative Leader)', text:'Post-election leadership: pledged to oppose Labour\'s NHS restructuring, calling abolition of NHS England "disruptive and expensive". Argued for NHS independence from political control.', source:'con_leadership', change:'reaffirm' },
+        { date:'2025-03', type:'statement', who:'Conservative Party', text:'Spring conference reaffirmed opposition to NHS England/DHSC merger, warning it risks patient outcomes and could cost hundreds of millions in transition costs.', source:'con_spring25', change:'reaffirm' },
+      ]
+    },
+    ld:{
+      summary:'Called for 8,000 more GPs, a cross-party health commission, a right to a same-day GP appointment, and a £3bn ring-fenced social care fund. In opposition, has challenged the government on GP recruitment pace.',
+      bullets:['8,000 more GPs within 5 years','Cross-party health commission','£3bn ring-fenced social care fund','Right to same-day GP appointment'],
+      leaning:'supportive', score:76,
+      sources:['ld_manifesto'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Liberal Democrats', text:'Manifesto: 8,000 more GPs, right to same-day GP appointment, 10-year NHS plan with cross-party input, £3bn dedicated social care fund, and 8,000 new mental health professionals.', source:'ld_manifesto', change:'reaffirm' },
+        { date:'2025-02', type:'speech',    who:'Ed Davey (Lib Dem Leader)', text:'Spring conference highlights GP access crisis. Reiterated 8,000 GP target and criticised Labour for slow recruitment. Called for genuinely cross-party approach to NHS reform.', source:'ld_manifesto', change:'reaffirm' },
+      ]
+    },
+    grn:{
+      summary:'Most expansive NHS platform: £24bn additional NHS investment from wealth taxes, nationalise social care, abolish prescription charges, and achieve four-day maximum mental health wait.',
+      bullets:['£24bn extra NHS investment (funded by wealth taxes)','Nationalise social care – free personal care','Abolish prescription charges','4-day maximum mental health wait guarantee'],
+      leaning:'supportive', score:92,
+      sources:['grn_manifesto'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Green Party', text:'Manifesto proposes £24bn/year additional NHS investment funded by wealth taxes. Nationalise all social care. Abolish prescription charges. Four-day maximum mental health wait.', source:'grn_manifesto', change:'reaffirm' },
+        { date:'2025-01', type:'statement', who:'Carla Denyer / Adrian Ramsay (Green Co-leaders)', text:'Responded to NHS 10 Year Plan consultation calling for genuine investment, not structural reorganisation, and demanding social care nationalisation be placed at the centre of the plan.', source:'nhs_10yr', change:'reaffirm' },
+      ]
+    },
+    ref:{
+      summary:'Zero-rate NHS from VAT, free prescriptions and hospital parking, cut management by 50%. Post-election, Farage has floated partial insurance-based model for non-emergency care.',
+      bullets:['Zero-rate NHS from VAT','Free hospital car parking','Free NHS prescriptions','Cut NHS management headcount by 50%'],
+      leaning:'moderate', score:42,
+      sources:['ref_contract'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Reform UK', text:'Contract proposes zero-rating NHS from VAT, free prescriptions, free hospital car parks. Cut management headcount by 50% to redirect spend to frontline. End DEI roles in NHS.', source:'ref_contract', change:'reaffirm' },
+        { date:'2025-03', type:'speech',    who:'Nigel Farage (Reform UK Leader)', text:'Described NHS as "institutionally broken" and suggested a partial insurance model for non-emergency treatment to reduce waiting lists, going beyond the 2024 contract.', source:'yougov_vi', change:'shift' },
+      ]
+    },
+    snp:{
+      summary:'Scotland maintains free prescriptions and free personal care. John Swinney\'s Scottish Budget 2024-25 increased NHS Scotland funding by 4.3% but Scotland faces its own waiting list pressures.',
+      bullets:['Free prescriptions maintained (Scotland)','Free personal care maintained (Scotland)','NHS Scotland budget +4.3% (2024-25)','Barnett formula reform called for'],
+      leaning:'supportive', score:70,
+      sources:['snp_manifesto','snp_swinney'],
+      timeline:[
+        { date:'2024-05', type:'policy',    who:'John Swinney (SNP First Minister)', text:'Became First Minister in May 2024, naming NHS waiting times as a priority. Scottish Budget 2024-25 subsequently increased NHS Scotland funding by 4.3% in real terms.', source:'snp_swinney', change:'reaffirm' },
+        { date:'2024-06', type:'manifesto', who:'SNP', text:'Manifesto maintains free prescriptions and free personal care in Scotland. Calls on Westminster to fund NHS properly through progressive taxation and to reform the Barnett formula.', source:'snp_manifesto', change:'reaffirm' },
+      ]
+    },
+  }
+},
+{
+  id:'immigration', icon:'✈️', label:'Immigration',
+  desc:'Border control, asylum systems, visa routes for workers and students, integration policy, and the Rwanda scheme.',
+  fact:'Net migration to the UK reached a record 728,000 in the year to June 2023, according to the ONS. The Rwanda deportation scheme cost taxpayers over £700m before being halted. The asylum backlog exceeded 130,000 cases by end of 2023.',
+  factSources:['ons_migration','nao_rwanda','ho_asylum'],
+  stances:{
+    lab:{
+      summary:'Scrapped the Rwanda scheme immediately on taking office. Created a Border Security Command. Published an Immigration White Paper in December 2024 tightening work, study, and family visa routes and introducing a 10-year settlement path.',
+      bullets:['Rwanda scheme cancelled (Jul 2024)','Border Security Command established','Immigration White Paper (Dec 2024) – tighter thresholds','10-year path to settlement (up from 5 years)'],
+      leaning:'moderate', score:38,
+      sources:['lab_manifesto','immigration_wp'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Labour Party',                text:'Manifesto scraps Rwanda scheme as "costly and unworkable". Establishes a Border Security Command. No specific net migration target. Focuses on tackling illegal working and visa non-compliance.', source:'lab_manifesto', change:'reaffirm' },
+        { date:'2024-07', type:'policy',    who:'Yvette Cooper (Home Secretary)', text:'Rwanda scheme formally cancelled within days of Labour taking office. Government pledges a "new approach" to stopping small boat crossings, centred on upstream intelligence partnerships.', source:'immigration_wp', change:'reaffirm' },
+        { date:'2024-12', type:'policy',    who:'Yvette Cooper (Home Secretary)', text:'Immigration White Paper introduces a 10-year path to settlement (up from 5), raises salary thresholds for skilled workers, tightens student visa compliance rules, and restricts overseas care worker recruitment routes.', source:'immigration_wp', change:'shift' },
+      ]
+    },
+    con:{
+      summary:'Built policy around the Rwanda scheme and tighter visa rules while in government. Under Kemi Badenoch, has hardened to include leaving the ECHR and a target of net migration below 100,000.',
+      bullets:['Rwanda scheme (Labour cancelled)','Raised skilled-worker salary thresholds in office','Now: leave ECHR to enable deportations','Target: net migration below 100,000/year'],
+      leaning:'opposed', score:18,
+      sources:['con_manifesto','con_leadership','con_spring25'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Conservative Party',       text:'Manifesto centred on Rwanda deterrent. Salary thresholds for skilled workers raised to £38,700. Tighter family visa rules. Committed to cutting net migration significantly.', source:'con_manifesto', change:'reaffirm' },
+        { date:'2024-11', type:'policy',    who:'Kemi Badenoch (Conservative Leader)', text:'New leader says Conservatives should support leaving the ECHR to enable mass deportations and "fully restore" border control, going beyond previous government policy.', source:'con_leadership', change:'shift' },
+        { date:'2025-03', type:'speech',    who:'Kemi Badenoch (Conservative Leader)', text:'Spring conference sets a target of net migration below 100,000/year. Calls for near-zero illegal entry. Says the ECHR as interpreted by courts is "incompatible with democratic border control".', source:'con_spring25', change:'reaffirm' },
+      ]
+    },
+    ld:{
+      summary:'Opposed the Rwanda scheme and hostile environment policy. Calls for faster and fairer asylum decisions, safe legal routes, and family reunion rights. Criticised Labour\'s Immigration White Paper as too restrictive.',
+      bullets:['Scrap Rwanda scheme (done)','Safe and legal refugee routes','Faster asylum decision-making','Restore family reunion rights for refugees'],
+      leaning:'supportive', score:68,
+      sources:['ld_manifesto','immigration_wp'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Liberal Democrats',              text:'Manifesto: scrap Rwanda scheme, create safe legal routes, speed up asylum processing to 6 months, restore family reunion rights, and end the hostile environment policy.', source:'ld_manifesto', change:'reaffirm' },
+        { date:'2024-12', type:'statement', who:'Alistair Carmichael MP (Lib Dem Home Affairs)', text:'Criticised Labour\'s Immigration White Paper for going "too far, too fast" in restricting legitimate family and work routes. Backed asylum system reform but opposed blanket visa tightening.', source:'immigration_wp', change:'reaffirm' },
+      ]
+    },
+    grn:{
+      summary:'Opposes all deportation schemes, indefinite detention, and the hostile environment. Calls for fully open and humane immigration policy and restoration of freedom of movement.',
+      bullets:['Abolish indefinite detention','Open safe and legal routes','Scrap hostile environment policy','Oppose ECHR exit'],
+      leaning:'supportive', score:85,
+      sources:['grn_manifesto'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Green Party', text:'Abolish indefinite immigration detention. Create safe legal routes for all asylum seekers. Scrap hostile environment. Firmly oppose leaving ECHR. Reopen freedom of movement debate.', source:'grn_manifesto', change:'reaffirm' },
+      ]
+    },
+    ref:{
+      summary:'Net-zero migration target, immediate deportation of illegal arrivals, leave the ECHR. Reform surged in polls through 2024–25, partly on an immigration platform.',
+      bullets:['Net-zero migration target (long-term)','Leave ECHR immediately','Deport illegal arrivals same day','Freeze all non-essential immigration'],
+      leaning:'opposed', score:8,
+      sources:['ref_contract','yougov_vi'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Reform UK',                      text:'Contract: freeze all non-essential immigration, net-zero long-term migration target, leave ECHR immediately, deport illegal arrivals on arrival day, end chain migration.', source:'ref_contract', change:'reaffirm' },
+        { date:'2025-02', type:'speech',    who:'Nigel Farage (Reform UK Leader)', text:'Called Labour\'s Immigration White Paper "nowhere near enough". Demanded a complete immigration freeze until the backlog is cleared — estimated by Farage at over 10 years.', source:'yougov_vi', change:'reaffirm' },
+      ]
+    },
+    snp:{
+      summary:'Strongly opposed the Rwanda scheme and current UK immigration policy. Calls for Scotland-specific visa routes, devolution of immigration powers, and restoration of freedom of movement.',
+      bullets:['Scotland-specific visa routes (demographic needs)','Devolve immigration powers to Holyrood','Oppose Rwanda scheme (succeeded)','Restore EU freedom of movement'],
+      leaning:'supportive', score:73,
+      sources:['snp_manifesto','immigration_wp'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'SNP', text:'Calls for Scottish visa route for demographic and economic needs, devolution of immigration powers, scrapping Rwanda scheme, and restoring freedom of movement post-Brexit.', source:'snp_manifesto', change:'reaffirm' },
+        { date:'2024-12', type:'vote',      who:'SNP Westminster Group', text:'SNP MPs voted against Labour\'s Immigration White Paper measures in the Commons, calling them a "Tory-lite crackdown" that will damage Scotland\'s economy and public services.', source:'immigration_wp', change:'reaffirm' },
+      ]
+    },
+  }
+},
+{
+  id:'economy', icon:'📈', label:'Economy & Tax',
+  desc:'Fiscal rules, income and corporation tax, cost of living support, public investment strategy, and economic governance.',
+  fact:'UK public debt stands at approximately 98% of GDP as of 2024. Real wages only returned to their pre-financial-crisis 2008 level in late 2023, after 15 years of stagnation.',
+  factSources:['obr_debt','ons_wages'],
+  stances:{
+    lab:{
+      summary:'Committed to not raising income tax, NI, or VAT for workers. The October 2024 Budget raised employer NI to 15%, capital gains tax, and updated fiscal rules to allow more borrowing for investment — a total tax rise of ~£40bn.',
+      bullets:['No income tax/NI/VAT rises for workers (kept)','Employer NI raised to 15% (Oct 2024)','Capital gains tax raised (Oct 2024)','Fiscal rules updated to allow investment borrowing'],
+      leaning:'moderate', score:56,
+      sources:['lab_manifesto','budget_oct24'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Labour Party',          text:'Manifesto: iron-clad pledge — no income tax, NI, or VAT rises for working people. Fund public services via non-dom reform, private school VAT, oil/gas windfall levy, and hedge fund tax.', source:'lab_manifesto', change:'reaffirm' },
+        { date:'2024-10', type:'policy',    who:'Rachel Reeves (Chancellor)', text:'Autumn Budget raises employer NI from 13.8% to 15% and lowers the secondary threshold. CGT raised. Total tax rise: ~£40bn. Fiscal rules updated to permit borrowing for capital investment. Described as "difficult but necessary" to fix public finances.', source:'budget_oct24', change:'shift' },
+      ]
+    },
+    con:{
+      summary:'In government, cut NI twice. In opposition, attacks Labour tax rises as a "jobs tax" and advocates for a supply-side, tax-cutting agenda at the next election.',
+      bullets:['NI cut twice in government (13.8% → 8% planned)','Oppose employer NI rise – called "jobs tax"','Lower corporation tax to drive growth','Fiscal rules: debt falling as % GDP'],
+      leaning:'opposed', score:30,
+      sources:['con_manifesto','con_leadership'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Conservative Party',        text:'Manifesto: 2p further NI cut, abolish NI for self-employed by 2029. Keep corporation tax competitive. Debt-to-GDP falling as overriding fiscal rule. Oppose wealth taxes.', source:'con_manifesto', change:'reaffirm' },
+        { date:'2024-10', type:'vote',      who:'Conservative Party (Opposition)', text:'Voted against October 2024 Budget in its entirety. Kemi Badenoch called employer NI rise a "jobs tax" that will raise prices and cut employment. Set out intent to reverse NI rise if in government.', source:'con_leadership', change:'reaffirm' },
+      ]
+    },
+    ld:{
+      summary:'Supports investment-led growth, a higher oil and gas windfall tax, a 4% share buyback tax, and rejoining the EU single market as the primary growth lever.',
+      bullets:['Rejoin EU single market','Higher oil and gas windfall levy','4% tax on share buybacks','Investment in green and digital infrastructure'],
+      leaning:'moderate', score:60,
+      sources:['ld_manifesto'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Liberal Democrats', text:'Manifesto: rejoin EU single market as primary growth driver, raise oil/gas windfall tax, introduce 4% tax on share buybacks. Investment-led growth. Oppose further public service austerity.', source:'ld_manifesto', change:'reaffirm' },
+        { date:'2024-10', type:'statement', who:'Ed Davey (Lib Dem Leader)', text:'Welcomed NHS investment in October Budget but criticised employer NI rise as risking small business growth. Renewed call for rejoining EU single market to address UK\'s structural growth problem.', source:'budget_oct24', change:'reaffirm' },
+      ]
+    },
+    grn:{
+      summary:'Most redistributive: wealth tax on assets over £10m, 90p top rate above £125,140, four-day working week legislation, and a Universal Basic Income pilot.',
+      bullets:['Wealth tax on assets over £10m','90p top income tax rate (above £125,140)','Four-day working week – legislation','Universal Basic Income pilot programme'],
+      leaning:'supportive', score:90,
+      sources:['grn_manifesto'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Green Party', text:'Wealth tax on assets over £10m. 90p top income tax rate. Four-day week legislation. UBI pilot. Fund £50bn/year public investment. Higher corporation tax and financial transaction taxes.', source:'grn_manifesto', change:'reaffirm' },
+      ]
+    },
+    ref:{
+      summary:'Major tax-cutting platform: income tax-free threshold raised to £20,000, inheritance tax abolished, corporation tax cut to 15%. Funded by cutting foreign aid, DEI spend, and net zero programmes.',
+      bullets:['Income tax-free to £20,000','Abolish inheritance tax','Corporation tax cut to 15%','Cut foreign aid and net zero spending'],
+      leaning:'opposed', score:22,
+      sources:['ref_contract','yougov_vi'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Reform UK', text:'No income tax up to £20,000. Abolish inheritance tax. Corporation tax to 15%. Fund via cutting foreign aid, DEI roles, and scrapping net zero. Project 5%+ GDP growth through deregulation.', source:'ref_contract', change:'reaffirm' },
+        { date:'2024-10', type:'speech',    who:'Nigel Farage (Reform UK Leader)', text:'Called October 2024 Budget "socialist" and a "death knell for small business". Pledged a Reform government would cut the overall tax burden by over £100bn, going beyond the 2024 contract.', source:'yougov_vi', change:'reaffirm' },
+      ]
+    },
+    snp:{
+      summary:'Progressive income tax in Scotland. Opposed Westminster austerity. Council tax freeze ended in 2025 due to budget pressures, showing tension between SNP values and fiscal reality.',
+      bullets:['Progressive income tax bands (Scotland)','Oppose two-child benefit cap','Barnett formula reform called for','Council tax freeze ended (2025) – budget pressure'],
+      leaning:'supportive', score:64,
+      sources:['snp_manifesto','snp_swinney'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'SNP', text:'Back progressive income tax at Holyrood level. Oppose Westminster austerity. End two-child benefit limit. Call for Barnett formula reform and independent Scottish fiscal powers.', source:'snp_manifesto', change:'reaffirm' },
+        { date:'2025-02', type:'policy',    who:'John Swinney (SNP First Minister)', text:'Scottish Budget 2025-26 maintains progressive income tax bands but ends the council tax freeze (in place since 2007) due to fiscal pressures — a significant departure from SNP policy.', source:'snp_swinney', change:'shift' },
+      ]
+    },
+  }
+},
+{
+  id:'climate', icon:'🌿', label:'Environment & Climate',
+  desc:'Net zero targets, energy transition, North Sea oil licensing, green investment, nature protection, and climate commitments.',
+  fact:'UK carbon emissions have fallen roughly 50% since 1990. However, the independent Climate Change Committee\'s 2024 report warns current policies are insufficient to meet the UK\'s legally binding 2035 carbon target. The North Sea still produces approximately 1 million barrels of oil equivalent per day.',
+  factSources:['ccc_progress','nsta_production'],
+  stances:{
+    lab:{
+      summary:'Clean electricity by 2030 via Great British Energy (publicly-owned, seeded with £8.3bn). No new North Sea oil and gas licences. Great British Energy Act received Royal Assent in February 2025.',
+      bullets:['Great British Energy Act – Royal Assent Feb 2025','Clean electricity by 2030','No new North Sea oil/gas licences','Warm Homes Plan – 5 million homes upgraded'],
+      leaning:'supportive', score:78,
+      sources:['lab_manifesto','gbe_act'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Labour Party',                text:'Manifesto: Great British Energy — publicly-owned clean energy company seeded at £8.3bn. 100% clean electricity by 2030. No new North Sea oil/gas licences. Warm Homes Plan for 5 million homes.', source:'lab_manifesto', change:'reaffirm' },
+        { date:'2025-02', type:'policy',    who:'Ed Miliband (Energy Secretary)', text:'Great British Energy Act receives Royal Assent. Company headquartered in Aberdeen. First investments announced in offshore wind, tidal, and community solar. Heralded as "a new chapter for British energy".', source:'gbe_act', change:'reaffirm' },
+      ]
+    },
+    con:{
+      summary:'In government issued 100 new North Sea licences and delayed the petrol/diesel car ban to 2035. Under Kemi Badenoch, there is growing internal pressure to weaken or scrap the 2050 net zero target.',
+      bullets:['100 new North Sea licences (2023)','Petrol/diesel ban delayed to 2035','Net zero 2050 maintained (contested)','Voted against Great British Energy Bill'],
+      leaning:'opposed', score:26,
+      sources:['con_manifesto','con_leadership'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Conservative Party',        text:'Manifesto maintains net zero 2050 but weakened near-term targets. Pushed petrol/diesel ban to 2035. Issued 100 new North Sea licences. Opposed mandatory heat pump installation targets.', source:'con_manifesto', change:'reaffirm' },
+        { date:'2024-10', type:'vote',      who:'Conservative Party (Opposition)', text:'Voted against Great British Energy Bill at second reading, calling it a "vanity project" and arguing private capital should lead the energy transition, not a state-owned company.', source:'con_leadership', change:'reaffirm' },
+        { date:'2024-11', type:'speech',    who:'Kemi Badenoch (Conservative Leader)', text:'Said net zero "as currently planned is unaffordable" and declined to rule out reviewing the 2050 target. Signalled significant divergence from Conservative manifesto commitment.', source:'con_leadership', change:'shift' },
+      ]
+    },
+    ld:{
+      summary:'£150bn green recovery over five years, net zero by 2045 (five years ahead of current law), and insulating 19 million homes by 2030. Opposes new North Sea licences.',
+      bullets:['£150bn green recovery plan','Net zero by 2045 (ahead of law)','Insulate 19 million homes by 2030','No new North Sea oil/gas licences'],
+      leaning:'supportive', score:85,
+      sources:['ld_manifesto'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Liberal Democrats', text:'£150bn green recovery over 5 years. Net zero by 2045 — 5 years ahead of the legal target. Insulate 19m homes by 2030. No new oil/gas licences. 80% renewables by 2030.', source:'ld_manifesto', change:'reaffirm' },
+      ]
+    },
+    grn:{
+      summary:'Most ambitious: net zero by 2040, £40bn/year green investment, immediate halt to all new fossil fuel development, phase out domestic flights where rail exists.',
+      bullets:['Net zero by 2040','£40bn/year green investment','Immediate halt to fossil fuel development','Free home insulation for all'],
+      leaning:'supportive', score:98,
+      sources:['grn_manifesto'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Green Party', text:'Green New Deal: net zero by 2040, £40bn/year public green investment, ban all new fossil fuel projects, no new airport runways, phase out domestic flights where rail alternative exists. Free insulation for all homes.', source:'grn_manifesto', change:'reaffirm' },
+      ]
+    },
+    ref:{
+      summary:'Explicitly sceptical of climate science consensus. Would scrap the Climate Change Act, end wind and solar subsidies, and expand North Sea oil and gas extraction.',
+      bullets:['Scrap net zero target','Repeal Climate Change Act 2008','Expand North Sea oil and gas','End all wind and solar subsidies'],
+      leaning:'opposed', score:5,
+      sources:['ref_contract','yougov_vi'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Reform UK',                      text:'Contract: scrap net zero entirely, repeal Climate Change Act 2008, end offshore wind subsidies, expand North Sea oil/gas. Describes net zero as an "unaffordable political vanity project".', source:'ref_contract', change:'reaffirm' },
+        { date:'2025-03', type:'speech',    who:'Nigel Farage (Reform UK Leader)', text:'Called Great British Energy "a state vanity project wasting billions" and pledged Reform would repeal the Great British Energy Act immediately on forming government.', source:'yougov_vi', change:'reaffirm' },
+      ]
+    },
+    snp:{
+      summary:'Scotland has its own 2045 net zero target. SNP opposes new North Sea licences in devolved planning and is committed to a just transition for oil and gas workers. Welcomed Great British Energy Act.',
+      bullets:['Scottish net zero by 2045','Just transition for oil/gas workers','Oppose new North Sea licences (devolved)','Welcomed Great British Energy Act'],
+      leaning:'supportive', score:74,
+      sources:['snp_manifesto','gbe_act'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'SNP', text:'Scottish net zero by 2045. Just transition for North Sea workers. Oppose new oil/gas licences within devolved planning powers. Back public energy ownership. Call for greater UK green investment.', source:'snp_manifesto', change:'reaffirm' },
+        { date:'2025-02', type:'statement', who:'SNP Westminster Group', text:'Welcomed the Great British Energy Act but called the £8.3bn seed funding "far too small for the scale of the challenge". Called for the company to have explicit Scottish operations and jobs.', source:'gbe_act', change:'reaffirm' },
+      ]
+    },
+  }
+},
+{
+  id:'housing', icon:'🏠', label:'Housing',
+  desc:'Housebuilding targets, rent controls, planning reform, leasehold abolition, affordable homes, and first-time buyer support.',
+  fact:'UK house prices stand at approximately 9 times average annual earnings in 2024. Only 234,000 new homes were completed in England in 2022-23, against the government target of 300,000 per year. Private renters now account for 20% of households, double their share in 2000.',
+  factSources:['ons_hpi','dluhc_hbs'],
+  stances:{
+    lab:{
+      summary:'Pledged 1.5 million homes over the parliament with mandatory local housing targets restored. The Renters Rights Bill abolishing Section 21 no-fault evictions passed the Commons in 2025. Planning reform introduced "grey belt" land category to unlock development.',
+      bullets:['1.5m homes this parliament','Restore mandatory local housing targets','Renters Rights Bill – no Section 21 evictions','Grey belt land category for planning'],
+      leaning:'supportive', score:80,
+      sources:['lab_manifesto','renters_bill'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Labour Party',                   text:'Pledge: 1.5 million homes in the parliament. Restore mandatory housing targets removed by Conservatives. New towns programme. Renters Rights Bill to abolish Section 21 no-fault evictions.', source:'lab_manifesto', change:'reaffirm' },
+        { date:'2025-03', type:'policy',    who:'Angela Rayner (Housing Secretary)', text:'Renters Rights Bill passes Commons third reading, abolishing Section 21 and creating periodic tenancies. 2024 completions data shows England tracking below 200,000 — below the 300,000 annual target.', source:'renters_bill', change:'reaffirm' },
+      ]
+    },
+    con:{
+      summary:'Removed mandatory housing targets in government, delaying Renters Reform Bill. In opposition, Conservative MPs voted against the Renters Rights Bill, arguing it reduces rental supply.',
+      bullets:['Removed mandatory housing targets (2023)','Delayed Renters Reform Bill in office','Voting against Renters Rights Bill (2025)','Leasehold reform – legislated but incomplete'],
+      leaning:'neutral', score:30,
+      sources:['con_manifesto','renters_bill'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Conservative Party', text:'Manifesto scrapped mandatory local housing targets. Opposed high-density urban development in many communities. Delayed Renters Reform Bill. Committed to leasehold abolition but did not complete it in office.', source:'con_manifesto', change:'reaffirm' },
+        { date:'2025-03', type:'vote',      who:'Conservative Party (Opposition)', text:'Conservative MPs voted against Renters Rights Bill at third reading, arguing abolition of Section 21 will shrink the rental sector and raise rents by reducing landlord supply.', source:'renters_bill', change:'reaffirm' },
+      ]
+    },
+    ld:{
+      summary:'380,000 homes/year including 150,000 social homes, rent controls in high-pressure areas, and full replacement of leasehold with commonhold.',
+      bullets:['380,000 homes/year target','150,000 social homes/year','Rent controls (high-pressure areas)','Replace leasehold with commonhold'],
+      leaning:'supportive', score:88,
+      sources:['ld_manifesto'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Liberal Democrats', text:'380,000 homes per year including 150,000 social homes. Rent controls in areas of high pressure. Replace leasehold with commonhold. Garden cities. Immediate abolition of Section 21.', source:'ld_manifesto', change:'reaffirm' },
+      ]
+    },
+    grn:{
+      summary:'100,000 council homes per year, inflation-linked rent controls, an empty homes tax, and banning second homes in housing-stressed areas.',
+      bullets:['100,000 council homes/year','Rent controls (inflation-linked)','Empty homes tax – 250,000 homes unlocked','Ban second homes in pressured areas'],
+      leaning:'supportive', score:92,
+      sources:['grn_manifesto'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Green Party', text:'100,000 council homes per year. Rent controls linked to inflation. Empty homes tax to bring 250,000 vacant properties into use. Ban second homes in housing-stressed areas. Abolish Right to Buy.', source:'grn_manifesto', change:'reaffirm' },
+      ]
+    },
+    ref:{
+      summary:'Proposes cutting immigration to reduce housing demand rather than building more. Planning deregulation for private developers. No rent controls or mandatory affordable housing requirements.',
+      bullets:['Reduce demand via migration cuts','Deregulate planning for developers','No rent controls','No mandatory affordable housing quotas'],
+      leaning:'neutral', score:28,
+      sources:['ref_contract'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Reform UK', text:'Address housing demand by cutting migration. Deregulate planning to accelerate private development. No rent controls. No mandatory affordable housing quotas in new developments.', source:'ref_contract', change:'reaffirm' },
+      ]
+    },
+    snp:{
+      summary:'Scotland\'s rent cap (introduced under emergency legislation) has been modified in 2025 to cap increases at 1% rather than a full freeze. 110,000 affordable homes target by 2032.',
+      bullets:['110,000 affordable homes by 2032','Rent cap modified to 1% increase (2025)','Expand social housing programme','Oppose Right to Buy'],
+      leaning:'supportive', score:73,
+      sources:['snp_manifesto','snp_swinney'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'SNP', text:'110,000 affordable homes by 2032. Maintain rent cap under emergency cost-of-living legislation. Expand social housing. Oppose Westminster Right to Buy.', source:'snp_manifesto', change:'reaffirm' },
+        { date:'2025-01', type:'policy',    who:'John Swinney (SNP First Minister)', text:'Scottish Government announces rent cap will be maintained in 2025-26 but with increases capped at 1% rather than a full freeze — citing need to maintain rental supply as landlords exit the market.', source:'snp_swinney', change:'shift' },
+      ]
+    },
+  }
+},
+{
+  id:'welfare', icon:'🤝', label:'Benefits & Social Security',
+  desc:'Universal Credit, disability benefits, the two-child cap, pension triple lock, and welfare reform.',
+  fact:'4.2 million children live in poverty in the UK. The two-child benefit cap directly affects 1.6 million children. 4.2 million households depend on Universal Credit. Benefits have fallen in real terms relative to the cost of living since 2015.',
+  factSources:['cpag_poverty','cpag_twochild','dwp_uc'],
+  stances:{
+    lab:{
+      summary:'Maintained the pension triple lock. Kept the two-child benefit cap despite backbench pressure. Means-tested Winter Fuel Payment in October 2024. Published a Pathways to Work Green Paper in March 2025 proposing significant PIP and health benefit changes — generating a major backbench revolt.',
+      bullets:['Triple lock maintained','Two-child cap NOT scrapped (as at May 2025)','Winter Fuel Payment means-tested (Oct 2024)','Pathways to Work Green Paper – PIP reform (Mar 2025)'],
+      leaning:'moderate', score:46,
+      sources:['lab_manifesto','budget_oct24','dwp_pathways'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Labour Party',          text:'Manifesto maintains triple lock. Promises a child poverty strategy. Universal Credit reform to make work pay. Did not commit to scrapping the two-child benefit cap.', source:'lab_manifesto', change:'reaffirm' },
+        { date:'2024-10', type:'policy',    who:'Rachel Reeves (Chancellor)', text:'Autumn Budget means-tests the Winter Fuel Payment, removing it from approximately 10 million pensioners and restricting it to those on Pension Credit. Generates significant public backlash and Labour by-election losses.', source:'budget_oct24', change:'shift' },
+        { date:'2025-03', type:'policy',    who:'Liz Kendall (Work & Pensions Secretary)', text:'Pathways to Work Green Paper proposes tightening PIP eligibility, requiring more in-work support for partially fit-for-work claimants, and cutting the health element of Universal Credit. Triggers the largest Labour backbench revolt since the election.', source:'dwp_pathways', change:'shift' },
+      ]
+    },
+    con:{
+      summary:'Introduced the two-child benefit cap in 2017. Tightened work capability assessments. In opposition, backs further welfare conditionality and opposes scrapping the cap.',
+      bullets:['Two-child cap (introduced by Conservatives 2017)','Tightened work capability assessments in office','Oppose scrapping two-child cap','Triple lock maintained in office'],
+      leaning:'opposed', score:28,
+      sources:['con_manifesto'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Conservative Party', text:'Maintain two-child benefit cap. Tighter work capability assessments. More conditionality for out-of-work benefits. Triple lock maintained. Seek to cut overall welfare bill as share of GDP.', source:'con_manifesto', change:'reaffirm' },
+      ]
+    },
+    ld:{
+      summary:'Calls for scrapping the two-child cap, an essentials guarantee in Universal Credit so it covers basic costs, and humane disability benefit assessments. Voted against Labour\'s Pathways to Work reforms.',
+      bullets:['Scrap two-child cap','Essentials guarantee in Universal Credit','Humane PIP assessment reform','Carers Allowance increase'],
+      leaning:'supportive', score:74,
+      sources:['ld_manifesto','dwp_pathways'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Liberal Democrats',  text:'Scrap two-child benefit cap. Essentials guarantee in UC to cover actual cost of living. Replace PIP with a fairer assessment process. Increase Carers Allowance. No punitive benefit sanctions.', source:'ld_manifesto', change:'reaffirm' },
+        { date:'2025-03', type:'vote',      who:'Liberal Democrats',  text:'Voted against Labour\'s Pathways to Work Green Paper disability benefit changes, calling proposed PIP cuts "cruel" and arguing they will deepen poverty for disabled people.', source:'dwp_pathways', change:'reaffirm' },
+      ]
+    },
+    grn:{
+      summary:'Universal Basic Income pilot, immediate scrapping of the two-child cap, benefits set at the real cost of living, abolish sanctions and the bedroom tax.',
+      bullets:['Universal Basic Income pilot','Scrap two-child cap immediately','Benefits at cost-of-living level','Abolish all sanctions and bedroom tax'],
+      leaning:'supportive', score:96,
+      sources:['grn_manifesto','dwp_pathways'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Green Party', text:'UBI pilot. Scrap two-child cap immediately. Raise all benefits to the real cost of living. Abolish bedroom tax. End all sanctions. Genuine living income for disabled people.', source:'grn_manifesto', change:'reaffirm' },
+        { date:'2025-03', type:'vote',      who:'Carla Denyer MP (Green Party)', text:'Strongly opposed Labour\'s Pathways to Work Green Paper. Called proposals "an attack on the most vulnerable" and tabled an amendment to block PIP cuts outright.', source:'dwp_pathways', change:'reaffirm' },
+      ]
+    },
+    ref:{
+      summary:'Tighten welfare eligibility, return all claimants deemed capable to work, and cap overall welfare bill growth. Critical of scale of disability benefit expansion.',
+      bullets:['Tighten eligibility criteria','Return all capable claimants to work','Cap welfare bill growth','Reform disability assessments strictly'],
+      leaning:'opposed', score:12,
+      sources:['ref_contract'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'Reform UK', text:'Welfare bill at £280bn is unsustainable. Tighten eligibility for all out-of-work benefits. Strict capability assessments. End in-work welfare for workers who Reform argues should earn enough through minimum wage alone.', source:'ref_contract', change:'reaffirm' },
+      ]
+    },
+    snp:{
+      summary:'Scottish Child Payment (£26.70/week per child in poverty). No benefit sanctions in the Scottish system. SNP tabled a Westminster amendment to scrap the two-child cap UK-wide, defeated by the Labour whip.',
+      bullets:['Scottish Child Payment – £26.70/week/child','No benefit sanctions (Scotland)','Tabled amendment to scrap two-child cap UK-wide','Oppose Pathways to Work Green Paper'],
+      leaning:'supportive', score:78,
+      sources:['snp_manifesto','dwp_pathways'],
+      timeline:[
+        { date:'2024-06', type:'manifesto', who:'SNP', text:'Scottish Child Payment at £26.70/week per eligible child. No benefit sanctions in Scottish system. Call on Westminster to end two-child cap. Disability assistance overhauled to remove adversarial assessments in Scotland.', source:'snp_manifesto', change:'reaffirm' },
+        { date:'2025-03', type:'vote',      who:'SNP Westminster Group', text:'SNP MPs tabled an amendment to the Pathways to Work Bill to scrap the two-child cap UK-wide (estimated cost: £3.6bn/year). Motion defeated after Labour whipped against it.', source:'dwp_pathways', change:'reaffirm' },
+      ]
+    },
+  }
+},
+];
+
+// ── APP STATE ─────────────────────────────────────────────────────────────────
+let activeIssue = ISSUES[0].id;
+let activeView  = 'detail';
+let enabledParties = new Set(PARTIES.map(p => p.id));
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function getPill(l) {
+  if (l==='supportive') return { cls:'pill-supportive', label:'Expand & invest' };
+  if (l==='moderate')   return { cls:'pill-moderate',   label:'Reform & review' };
+  if (l==='opposed')    return { cls:'pill-opposed',    label:'Restrict & reduce' };
+  return { cls:'pill-neutral', label:'Neutral / mixed' };
+}
+function typeLabel(t) {
+  return ({manifesto:'Manifesto',platform:'Platform',speech:'Speech',interview:'Interview',vote:'Vote / Division',policy:'Policy / Law',statement:'Statement',eo:'Executive Order'})[t] || t;
+}
+function fmtDate(d) {
+  const [y,m] = d.split('-');
+  return (['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'])[+m]+' '+y;
+}
+
+// ── BUILD SIDEBAR ─────────────────────────────────────────────────────────────
+function buildSidebar() {
+  const list = document.getElementById('issueList');
+  list.innerHTML = '';
+  ISSUES.forEach(issue => {
+    const btn = document.createElement('button');
+    btn.className = 'issue-btn'+(issue.id===activeIssue?' active':'');
+    btn.dataset.id = issue.id;
+    btn.innerHTML = `<span class="issue-icon">${issue.icon}</span>${issue.label}`;
+    btn.addEventListener('click', ()=>selectIssue(issue.id));
+    list.appendChild(btn);
+  });
+
+  const filters = document.getElementById('partyFilters');
+  filters.innerHTML = '';
+  PARTIES.forEach(p => {
+    const label = document.createElement('label');
+    label.className = 'party-check';
+    label.innerHTML = `<input type="checkbox" checked data-party="${p.id}"><span class="party-dot" style="background:${p.color}"></span><span class="party-name">${p.name}</span>`;
+    label.querySelector('input').addEventListener('change', e => {
+      if (e.target.checked) enabledParties.add(p.id); else enabledParties.delete(p.id);
+      renderIssue(activeIssue);
+    });
+    filters.appendChild(label);
+  });
+}
+
+function selectIssue(id) {
+  activeIssue = id;
+  document.querySelectorAll('.issue-btn').forEach(b=>b.classList.toggle('active',b.dataset.id===id));
+  renderIssue(id);
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function renderIssue(id) {
+  const issue = ISSUES.find(i=>i.id===id);
+  if (!issue) return;
+
+  document.getElementById('issueTitleIcon').textContent = issue.icon;
+  document.getElementById('issueTitleText').textContent = issue.label;
+  document.getElementById('issueDesc').textContent = issue.desc;
+  document.getElementById('factText').textContent = issue.fact;
+
+  const citDiv = document.getElementById('factCitations');
+  citDiv.innerHTML = '';
+  (issue.factSources||[]).forEach(key => {
+    const s = S(key);
+    const a = document.createElement('a');
+    a.className='cite-link'; a.href=s.url; a.target='_blank'; a.rel='noopener';
+    a.textContent = s.label;
+    citDiv.appendChild(a);
+  });
+
+  const specRows = document.getElementById('spectrumRows');
+  specRows.innerHTML = '';
+  PARTIES.filter(p=>enabledParties.has(p.id)).forEach(p => {
+    const st = issue.stances[p.id];
+    const row = document.createElement('div');
+    row.className='spectrum-row';
+    row.innerHTML=`<span class="spectrum-party">${p.name}</span><div class="spectrum-bar-wrap"><div class="spectrum-fill" style="width:${st.score}%;background:${p.color}"></div></div><span class="spectrum-val">${st.score}/100</span>`;
+    specRows.appendChild(row);
+  });
+
+  if (activeView==='detail') renderDetailCards(issue);
+  else renderCompare(issue);
+}
+
+function renderDetailCards(issue) {
+  const grid = document.getElementById('stanceGrid');
+  grid.innerHTML = '';
+
+  PARTIES.filter(p=>enabledParties.has(p.id)).forEach(p => {
+    const st = issue.stances[p.id];
+    const pill = getPill(st.leaning);
+    const cardId = `tl-${p.id}-${issue.id}`;
+
+    const sourceChips = (st.sources||[]).map(key=>{
+      const s=S(key);
+      return `<a class="source-chip" href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`;
+    }).join('');
+
+    const tlEntries = (st.timeline||[]).map(e=>{
+      const s=S(e.source);
+      const changeBadge = e.change==='shift'
+        ? '<span class="tl-change shift">Position shift</span>'
+        : e.change==='reaffirm'
+          ? '<span class="tl-change reaffirm">Reaffirmed</span>'
+          : '';
+      return `<div class="timeline-entry">
+        <div class="tl-dot" style="background:${p.color}"></div>
+        <div class="tl-content">
+          <div class="tl-meta">
+            <span class="tl-date">${fmtDate(e.date)}</span>
+            <span class="tl-type type-${e.type}">${typeLabel(e.type)}</span>
+            <span class="tl-who">${e.who}</span>
+            ${changeBadge}
+          </div>
+          <div class="tl-text">${e.text}</div>
+          <a class="tl-source" href="${s.url}" target="_blank" rel="noopener">${s.label} ↗</a>
+        </div>
+      </div>`;
+    }).join('');
+
+    const card = document.createElement('div');
+    card.className='stance-card';
+    card.innerHTML=`
+      <div class="stance-card-header">
+        <div class="party-badge">
+          <div class="party-color-bar" style="background:${p.color}"></div>
+          <div>
+            <div class="party-badge-name">${p.name}</div>
+            <div class="party-badge-full">${p.full}</div>
+          </div>
+        </div>
+        <div class="header-right">
+          <span class="stance-pill ${pill.cls}">${pill.label}</span>
+          <button class="timeline-toggle" data-target="${cardId}">
+            Position history <span style="opacity:0.7">(${(st.timeline||[]).length})</span>
+          </button>
+        </div>
+      </div>
+      <div class="stance-body">
+        <p class="stance-summary">${st.summary}</p>
+        <ul class="stance-bullets">${st.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
+        <div class="stance-sources">
+          <span class="stance-source-label">Sources:</span>
+          ${sourceChips}
+        </div>
+      </div>
+      <div class="timeline-panel" id="${cardId}">
+        <div class="timeline-inner">
+          <div class="timeline-heading">Position history</div>
+          <div class="timeline-entries">${tlEntries}</div>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+
+    card.querySelector('.timeline-toggle').addEventListener('click', function(){
+      const panel=document.getElementById(this.dataset.target);
+      const open=panel.classList.toggle('open');
+      this.classList.toggle('open',open);
+      this.childNodes[0].textContent = open ? 'Hide history ' : 'Position history ';
+    });
+  });
+}
+
+function renderCompare(issue) {
+  const head=document.getElementById('compareHead');
+  const body=document.getElementById('compareBody');
+  const visible=PARTIES.filter(p=>enabledParties.has(p.id));
+
+  head.innerHTML=`<th style="min-width:130px">Issue / Party</th>`+
+    visible.map(p=>`<th><span style="display:inline-flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:${p.color};display:inline-block"></span>${p.name}</span></th>`).join('');
+
+  body.innerHTML='';
+  ISSUES.forEach(iss=>{
+    const row=document.createElement('tr');
+    if (iss.id===issue.id) row.style.background='var(--accent-light)';
+    row.innerHTML=`<td style="font-weight:500;font-size:13px">${iss.icon} ${iss.label}</td>`+
+      visible.map(p=>{
+        const s=iss.stances[p.id];
+        const pill=getPill(s.leaning);
+        const hasShift=(s.timeline||[]).some(t=>t.change==='shift');
+        const latest=(s.timeline||[]).slice(-1)[0];
+        return `<td>
+          <span class="stance-pill ${pill.cls}" style="font-size:10px;padding:2px 8px">${s.score}/100</span>
+          ${hasShift?'<span class="shift-badge" title="Position has shifted since the election">⟳</span>':''}
+          ${latest?`<div style="font-size:10px;color:var(--text-3);margin-top:2px">${fmtDate(latest.date)}</div>`:''}
+        </td>`;
+      }).join('');
+    row.addEventListener('click',()=>{
+      activeView='detail';
+      document.querySelectorAll('.view-tab').forEach(t=>t.classList.toggle('active',t.dataset.view==='detail'));
+      document.getElementById('detailView').classList.remove('hidden');
+      document.getElementById('compareView').classList.add('hidden');
+      selectIssue(iss.id);
+    });
+    body.appendChild(row);
+  });
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.view-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    activeView=tab.dataset.view;
+    document.querySelectorAll('.view-tab').forEach(t=>t.classList.toggle('active',t.dataset.view===activeView));
+    document.getElementById('detailView').classList.toggle('hidden',activeView!=='detail');
+    document.getElementById('compareView').classList.toggle('hidden',activeView!=='compare');
+    renderIssue(activeIssue);
+  });
+});
+
+buildSidebar();
+renderIssue(activeIssue);
+</script>
+</body>
+</html>
